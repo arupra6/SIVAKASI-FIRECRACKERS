@@ -3,20 +3,1188 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sivakasi Firecrackers</title>
+  <meta name="description" content="Retail Sivakasi firecrackers catalogue and enquiry website for Deepavali festival customers. Product price list, estimate cart, verification details and official WhatsApp enquiry." />
+  <title>Sivakasi Firecrackers | Retail Deepavali Enquiry</title>
+
+  <style>
+    :root {
+      --red: #8b1111;
+      --deep-red: #5f0707;
+      --gold: #f7c948;
+      --orange: #f97316;
+      --navy: #101827;
+      --cream: #fff7df;
+      --white: #ffffff;
+      --muted: #6b7280;
+      --green: #128c7e;
+      --border: #ead7a5;
+      --shadow: 0 12px 30px rgba(0,0,0,0.15);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--navy);
+      background: #fffaf0;
+      line-height: 1.6;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .top-alert {
+      background: var(--navy);
+      color: var(--gold);
+      text-align: center;
+      padding: 9px 16px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(255, 247, 223, 0.96);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      max-width: 1180px;
+      margin: auto;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #fff3a3 0%, #f97316 45%, #8b1111 100%);
+      display: grid;
+      place-items: center;
+      color: white;
+      font-weight: 900;
+      box-shadow: 0 6px 18px rgba(139, 17, 17, 0.25);
+    }
+
+    .brand h1 {
+      font-size: 20px;
+      line-height: 1.1;
+      color: var(--deep-red);
+    }
+
+    .brand span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover {
+      color: var(--red);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 18px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      font-size: 14px;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gold), #fff29a);
+      color: var(--deep-red);
+      border: 1px solid #f4bd22;
+    }
+
+    .btn-dark {
+      background: var(--navy);
+      color: white;
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: white;
+    }
+
+    .hero {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(247,201,72,0.35), transparent 28%),
+        radial-gradient(circle at 85% 12%, rgba(249,115,22,0.35), transparent 25%),
+        linear-gradient(135deg, var(--deep-red), #9f1239 48%, #f97316);
+      color: white;
+      padding: 72px 18px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "✦ ✺ ✦ ✺ ✦";
+      position: absolute;
+      right: 5%;
+      top: 20%;
+      font-size: 70px;
+      color: rgba(255,255,255,0.13);
+      transform: rotate(-12deg);
+      white-space: nowrap;
+    }
+
+    .hero-inner {
+      max-width: 1180px;
+      margin: auto;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 40px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      padding: 7px 12px;
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 999px;
+      margin-bottom: 18px;
+      color: var(--gold);
+      font-weight: 900;
+      font-size: 13px;
+    }
+
+    .hero h2 {
+      font-size: clamp(34px, 5vw, 62px);
+      line-height: 1.05;
+      margin-bottom: 18px;
+    }
+
+    .hero p {
+      font-size: 18px;
+      max-width: 640px;
+      color: #fff8df;
+      margin-bottom: 26px;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .trust-strip {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .trust-mini {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 16px;
+      padding: 12px;
+      font-weight: 800;
+      font-size: 13px;
+      color: #fff8df;
+    }
+
+    .hero-card {
+      background: rgba(255,255,255,0.95);
+      color: var(--navy);
+      border-radius: 28px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      border: 2px solid rgba(247,201,72,0.75);
+    }
+
+    .hero-card h3 {
+      color: var(--deep-red);
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .hero-card ul {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .hero-card li {
+      padding: 10px 12px;
+      background: #fff7df;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      font-weight: 700;
+    }
+
+    section {
+      padding: 64px 18px;
+    }
+
+    .container {
+      max-width: 1180px;
+      margin: auto;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 34px;
+    }
+
+    .section-head .eyebrow {
+      color: var(--red);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 13px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(28px, 3vw, 42px);
+      color: var(--deep-red);
+      margin: 8px 0 10px;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      max-width: 760px;
+      margin: auto;
+      font-size: 16px;
+    }
+
+    .warning-box {
+      background: linear-gradient(135deg, #fff7df, #fff3c4);
+      border: 2px dashed var(--orange);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: 0 10px 28px rgba(249,115,22,0.1);
+    }
+
+    .warning-box h3 {
+      color: var(--deep-red);
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    }
+
+    .card .icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: #fff2b8;
+      color: var(--deep-red);
+      font-size: 24px;
+      margin-bottom: 14px;
+    }
+
+    .card h3 {
+      color: var(--deep-red);
+      margin-bottom: 8px;
+      font-size: 19px;
+    }
+
+    .card p {
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+    }
+
+    .step {
+      background: white;
+      border-radius: 22px;
+      padding: 22px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .step-number {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--deep-red);
+      color: var(--gold);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      margin-bottom: 14px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .category {
+      background: linear-gradient(135deg, white, #fff7df);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      font-weight: 900;
+      color: var(--deep-red);
+      text-align: center;
+    }
+
+    .products-layout {
+      display: grid;
+      grid-template-columns: 1.4fr 0.6fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .product-tools {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+
+    .product-tools input,
+    .product-tools select,
+    .form-group input,
+    .form-group textarea {
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      width: 100%;
+    }
+
+    .product-tools input:focus,
+    .product-tools select:focus,
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 4px rgba(249,115,22,0.12);
+    }
+
+    .product-tools > * {
+      flex: 1 1 220px;
+    }
+
+    .product-table-wrap {
+      overflow-x: auto;
+      background: white;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.06);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th {
+      background: var(--deep-red);
+      color: var(--gold);
+      text-align: left;
+      padding: 14px;
+      font-size: 13px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 14px;
+      border-bottom: 1px solid #f0e1bd;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    .product-name {
+      font-weight: 900;
+      color: var(--navy);
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 4px 8px;
+      background: #fff2b8;
+      border-radius: 999px;
+      color: var(--deep-red);
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .price-old {
+      color: var(--muted);
+      text-decoration: line-through;
+      font-size: 13px;
+    }
+
+    .price-new {
+      color: var(--deep-red);
+      font-weight: 900;
+    }
+
+    .qty-control {
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+      background: #fffaf0;
+    }
+
+    .qty-control button {
+      width: 34px;
+      height: 34px;
+      border: none;
+      background: #fff2b8;
+      cursor: pointer;
+      font-weight: 900;
+      color: var(--deep-red);
+    }
+
+    .qty-control span {
+      min-width: 34px;
+      text-align: center;
+      font-weight: 900;
+    }
+
+    .estimate-card {
+      position: sticky;
+      top: 90px;
+      background: white;
+      border-radius: 24px;
+      border: 1px solid var(--border);
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .estimate-card h3 {
+      color: var(--deep-red);
+      margin-bottom: 12px;
+      font-size: 24px;
+    }
+
+    .summary-line {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px dashed var(--border);
+      gap: 12px;
+    }
+
+    .summary-line strong {
+      color: var(--deep-red);
+    }
+
+    .grand-total {
+      font-size: 26px;
+      color: var(--deep-red);
+      font-weight: 900;
+      margin: 16px 0;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 800;
+      margin-bottom: 5px;
+      font-size: 13px;
+      color: var(--navy);
+    }
+
+    .estimate-note {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 12px 0;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr;
+      gap: 16px;
+    }
+
+    .photo-placeholder {
+      min-height: 220px;
+      background:
+        linear-gradient(135deg, rgba(139,17,17,0.9), rgba(249,115,22,0.75)),
+        repeating-linear-gradient(45deg, rgba(255,255,255,0.1) 0 8px, transparent 8px 16px);
+      border-radius: 24px;
+      color: white;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 22px;
+      font-weight: 900;
+      border: 2px solid rgba(247,201,72,0.7);
+    }
+
+    .photo-placeholder.big {
+      grid-row: span 2;
+      min-height: 456px;
+    }
+
+    .contact-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+      background: var(--navy);
+      color: white;
+      padding: 28px;
+      border-radius: 28px;
+      border: 2px solid var(--gold);
+    }
+
+    .contact-box h3 {
+      color: var(--gold);
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+
+    .contact-list {
+      list-style: none;
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .contact-list li {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 12px;
+      border-radius: 14px;
+    }
+
+    footer {
+      background: var(--deep-red);
+      color: #fff8df;
+      padding: 32px 18px 86px;
+      text-align: center;
+    }
+
+    footer strong {
+      color: var(--gold);
+    }
+
+    .footer-note {
+      max-width: 900px;
+      margin: 16px auto 0;
+      font-size: 13px;
+      color: #ffeab1;
+    }
+
+    .mobile-bar {
+      display: none;
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 2000;
+      background: white;
+      border-top: 1px solid var(--border);
+      box-shadow: 0 -8px 22px rgba(0,0,0,0.12);
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .mobile-bar a {
+      padding: 12px 8px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--deep-red);
+      border-right: 1px solid var(--border);
+    }
+
+    .empty-state {
+      padding: 16px;
+      background: #fff7df;
+      border-radius: 16px;
+      color: var(--muted);
+      font-size: 14px;
+      margin: 10px 0;
+    }
+
+    @media (max-width: 920px) {
+      .nav-links {
+        display: none;
+      }
+
+      .hero-inner,
+      .products-layout,
+      .contact-box {
+        grid-template-columns: 1fr;
+      }
+
+      .trust-strip,
+      .grid-3,
+      .steps,
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .estimate-card {
+        position: static;
+      }
+
+      .photo-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .photo-placeholder.big {
+        min-height: 260px;
+      }
+
+      .mobile-bar {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 560px) {
+      section {
+        padding: 46px 14px;
+      }
+
+      .hero {
+        padding: 50px 14px 38px;
+      }
+
+      .trust-strip,
+      .grid-3,
+      .steps,
+      .categories {
+        grid-template-columns: 1fr;
+      }
+
+      .brand h1 {
+        font-size: 17px;
+      }
+
+      .hero-actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Welcome to Sivakasi Firecrackers</h1>
-  <p>Retail Deepavali firecrackers catalogue and enquiry website.</p>
+  <div class="top-alert">
+    Customer Safety First: Please verify our official number before making any payment. This website is for retail enquiry and estimate only.
+  </div>
 
-  <h2>Customer Safety First</h2>
-  <p>
-    This website is for product viewing, retail price estimation and enquiry submission only.
-    Final confirmation will be provided through our official phone or WhatsApp number.
-  </p>
+  <header>
+    <nav class="nav">
+      <a href="#home" class="brand" aria-label="Sivakasi Firecrackers Home">
+        <div class="brand-mark">SF</div>
+        <div>
+          <h1>Sivakasi Firecrackers</h1>
+          <span>The Original Sivakasi Crackers</span>
+        </div>
+      </a>
 
-  <h2>Contact</h2>
-  <p>Official WhatsApp: +91 XXXXX XXXXX</p>
-  <p>Official Call Number: +91 XXXXX XXXXX</p>
+      <div class="nav-links">
+        <a href="#verify">Verify Us</a>
+        <a href="#products">Price List</a>
+        <a href="#process">How It Works</a>
+        <a href="#safety">Safety</a>
+        <a href="#contact">Contact</a>
+        <a class="btn btn-green" href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-badge">Deepavali Retail Enquiry Open</div>
+          <h2>Trusted Sivakasi Firecrackers for Family Celebrations</h2>
+          <p>
+            Browse our retail price list, prepare your estimate, and submit your enquiry through our official contact number. We focus on transparent pricing, safe confirmation and customer verification.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#products">View Retail Price List</a>
+            <a class="btn btn-dark" href="#verify">Verify Our Shop</a>
+            <a class="btn btn-green" href="https://wa.me/919999999999" target="_blank" rel="noopener">Official WhatsApp</a>
+          </div>
+          <div class="trust-strip">
+            <div class="trust-mini">Official Contact Displayed</div>
+            <div class="trust-mini">Payment After Confirmation</div>
+            <div class="trust-mini">Transparent Estimate</div>
+            <div class="trust-mini">Safety First</div>
+          </div>
+        </div>
+
+        <div class="hero-card">
+          <h3>Why customers trust us</h3>
+          <p>We clearly display our shop details, official phone number, enquiry process and payment safety notice.</p>
+          <ul>
+            <li>✓ Retail price-list viewing</li>
+            <li>✓ Estimate cart with total calculation</li>
+            <li>✓ Official WhatsApp enquiry</li>
+            <li>✓ No random payment links</li>
+            <li>✓ Final confirmation by phone/WhatsApp</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="verify">
+      <div class="container">
+        <div class="warning-box">
+          <h3>Beware of Fake Crackers Websites</h3>
+          <p>
+            Many fake websites use copied product images, unrealistic discounts and random payment numbers to cheat customers. Please verify the business name, official mobile number, address and payment details before proceeding. Communicate only through the official numbers shown on this website.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Verification Details</div>
+          <h2>Shop verification before enquiry</h2>
+          <p>Replace the placeholder details below with your real shop information before launching publicly.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="icon">🏪</div>
+            <h3>Real Shop / Office</h3>
+            <p><strong>Address:</strong> Add your full shop address here, Sivakasi, Tamil Nadu.</p>
+          </div>
+          <div class="card">
+            <div class="icon">📞</div>
+            <h3>Official Numbers</h3>
+            <p><strong>Call:</strong> +91 99999 99999<br><strong>WhatsApp:</strong> +91 99999 99999</p>
+          </div>
+          <div class="card">
+            <div class="icon">✅</div>
+            <h3>Payment Safety</h3>
+            <p>Payment details will be shared only after enquiry verification through our official contact number.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="process" style="background:#fff7df;">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Simple Process</div>
+          <h2>How retail enquiry works</h2>
+          <p>We keep the process transparent, safe and easy for family customers.</p>
+        </div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <h3>Select Products</h3>
+            <p>Choose crackers from the retail price list and enter quantities.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <h3>Prepare Estimate</h3>
+            <p>The website calculates your total estimate automatically.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <h3>Submit Enquiry</h3>
+            <p>Send your estimate to our official WhatsApp number.</p>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <h3>Confirm Safely</h3>
+            <p>We confirm availability, permitted items and next steps offline.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Popular Categories</div>
+          <h2>Deepavali crackers categories</h2>
+        </div>
+        <div class="categories">
+          <div class="category">Sparklers</div>
+          <div class="category">Flower Pots</div>
+          <div class="category">Ground Chakkars</div>
+          <div class="category">Rockets</div>
+          <div class="category">Fancy Crackers</div>
+          <div class="category">Kids Crackers</div>
+          <div class="category">Gift Boxes</div>
+          <div class="category">Family Packs</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="products" style="background:#fff7df;">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Retail Price List</div>
+          <h2>Prepare your estimate</h2>
+          <p>Select quantities below. This is an estimate only. Final availability and confirmation will be provided through our official contact.</p>
+        </div>
+
+        <div class="products-layout">
+          <div>
+            <div class="product-tools">
+              <input type="search" id="searchInput" placeholder="Search product name..." aria-label="Search product name">
+              <select id="categoryFilter" aria-label="Filter by category">
+                <option value="all">All Categories</option>
+                <option value="Sparklers">Sparklers</option>
+                <option value="Flower Pots">Flower Pots</option>
+                <option value="Chakkars">Chakkars</option>
+                <option value="Fancy">Fancy</option>
+                <option value="Gift Box">Gift Box</option>
+              </select>
+            </div>
+
+            <div class="product-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>MRP</th>
+                    <th>Retail Price</th>
+                    <th>Qty</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="productBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <aside class="estimate-card">
+            <h3>Estimate Cart</h3>
+            <div id="selectedItems" class="empty-state">No products selected yet.</div>
+            <div class="summary-line"><span>Items</span><strong id="itemCount">0</strong></div>
+            <div class="summary-line"><span>Estimate Total</span><strong id="cartTotal">₹0</strong></div>
+            <div class="grand-total" id="grandTotal">₹0</div>
+
+            <div class="form-group">
+              <label for="customerName">Customer Name</label>
+              <input type="text" id="customerName" placeholder="Enter your name">
+            </div>
+            <div class="form-group">
+              <label for="customerMobile">Mobile Number</label>
+              <input type="tel" id="customerMobile" placeholder="Enter your mobile number">
+            </div>
+            <div class="form-group">
+              <label for="customerCity">City / Area</label>
+              <input type="text" id="customerCity" placeholder="Enter city or area">
+            </div>
+            <div class="form-group">
+              <label for="customerMessage">Message</label>
+              <textarea id="customerMessage" rows="3" placeholder="Any special request"></textarea>
+            </div>
+
+            <p class="estimate-note">
+              This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.
+            </p>
+
+            <button class="btn btn-green" style="width:100%;" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
+            <button class="btn btn-dark" style="width:100%; margin-top:10px;" onclick="window.print()">Print / Save Estimate</button>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety">
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Safety Guidelines</div>
+          <h2>Celebrate safely and responsibly</h2>
+          <p>Use crackers only as per local authority rules and permitted timing. Adult supervision is required.</p>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <div class="icon">🧯</div>
+            <h3>Keep water/sand nearby</h3>
+            <p>Always keep water or sand nearby while using fireworks.</p>
+          </div>
+          <div class="card">
+            <div class="icon">👨‍👩‍👧</div>
+            <h3>Adult supervision</h3>
+            <p>Children should use fireworks only under responsible adult supervision.</p>
+          </div>
+          <div class="card">
+            <div class="icon">🚫</div>
+            <h3>Avoid unsafe locations</h3>
+            <p>Do not burst crackers near hospitals, vehicles, petrol pumps, animals or crowded areas.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <div class="section-head">
+          <div class="eyebrow">Real Business Photos</div>
+          <h2>Add your shop photos here</h2>
+          <p>Real shop photos, signboard photos and team photos help customers trust your website.</p>
+        </div>
+        <div class="photo-grid">
+          <div class="photo-placeholder big">Shop Front / Signboard Photo<br><small>Replace with your real image</small></div>
+          <div class="photo-placeholder">Inside Shop Photo</div>
+          <div class="photo-placeholder">Owner / Team Photo</div>
+          <div class="photo-placeholder">Product Display Photo</div>
+          <div class="photo-placeholder">Packing / Support Photo</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact" style="background:#fff7df;">
+      <div class="container">
+        <div class="contact-box">
+          <div>
+            <h3>Contact & Verification</h3>
+            <p>Please verify our official details before proceeding with any enquiry or payment confirmation.</p>
+            <ul class="contact-list">
+              <li><strong>Business Name:</strong> Sivakasi Firecrackers</li>
+              <li><strong>Official Call:</strong> +91 99999 99999</li>
+              <li><strong>Official WhatsApp:</strong> +91 99999 99999</li>
+              <li><strong>Email:</strong> yourbusiness@email.com</li>
+              <li><strong>Address:</strong> Add your full address, Sivakasi, Tamil Nadu</li>
+              <li><strong>Business Hours:</strong> 9:00 AM – 9:00 PM</li>
+            </ul>
+          </div>
+          <div>
+            <h3>Official Payment Notice</h3>
+            <p>
+              Payment should be made only after confirmation from our official number. We do not take responsibility for payments made to unknown UPI IDs, QR codes or phone numbers claiming to represent our business.
+            </p>
+            <div style="margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;">
+              <a class="btn btn-primary" href="tel:+919999999999">Call Now</a>
+              <a class="btn btn-green" href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp Now</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p><strong>Sivakasi Firecrackers</strong> — Retail Deepavali Firecrackers Catalogue & Enquiry Website</p>
+    <p class="footer-note">
+      Legal Notice: This website is for product information, retail price-list viewing and enquiry submission only. Final confirmation of availability, permitted products, payment and pickup/delivery process will be handled offline through authorised communication.
+    </p>
+  </footer>
+
+  <div class="mobile-bar">
+    <a href="tel:+919999999999">Call</a>
+    <a href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
+    <a href="#products">Price List</a>
+  </div>
+
+  <script>
+    const officialWhatsappNumber = "919999999999";
+
+    const products = [
+      { id: 1, name: "7cm Electric Sparklers", category: "Sparklers", mrp: 120, price: 72 },
+      { id: 2, name: "10cm Colour Sparklers", category: "Sparklers", mrp: 180, price: 108 },
+      { id: 3, name: "Flower Pot Small", category: "Flower Pots", mrp: 250, price: 150 },
+      { id: 4, name: "Flower Pot Special", category: "Flower Pots", mrp: 420, price: 252 },
+      { id: 5, name: "Ground Chakkar Big", category: "Chakkars", mrp: 300, price: 180 },
+      { id: 6, name: "Ground Chakkar Special", category: "Chakkars", mrp: 520, price: 312 },
+      { id: 7, name: "Fancy Aerial Shot", category: "Fancy", mrp: 850, price: 510 },
+      { id: 8, name: "Colour Fountain", category: "Fancy", mrp: 650, price: 390 },
+      { id: 9, name: "Kids Gift Box", category: "Gift Box", mrp: 1500, price: 900 },
+      { id: 10, name: "Family Celebration Pack", category: "Gift Box", mrp: 3500, price: 2100 }
+    ];
+
+    const cart = {};
+
+    function formatCurrency(value) {
+      return "₹" + value.toLocaleString("en-IN");
+    }
+
+    function renderProducts() {
+      const searchValue = document.getElementById("searchInput").value.toLowerCase();
+      const categoryValue = document.getElementById("categoryFilter").value;
+      const productBody = document.getElementById("productBody");
+
+      const filtered = products.filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchValue);
+        const matchesCategory = categoryValue === "all" || product.category === categoryValue;
+        return matchesSearch && matchesCategory;
+      });
+
+      productBody.innerHTML = filtered.map(product => {
+        const qty = cart[product.id] || 0;
+        const total = qty * product.price;
+        return `
+          <tr>
+            <td>
+              <div class="product-name">${product.name}</div>
+              <small>Product ID: SF-${String(product.id).padStart(3, "0")}</small>
+            </td>
+            <td><span class="tag">${product.category}</span></td>
+            <td><div class="price-old">${formatCurrency(product.mrp)}</div></td>
+            <td><div class="price-new">${formatCurrency(product.price)}</div></td>
+            <td>
+              <div class="qty-control">
+                <button onclick="changeQty(${product.id}, -1)" aria-label="Decrease quantity">−</button>
+                <span>${qty}</span>
+                <button onclick="changeQty(${product.id}, 1)" aria-label="Increase quantity">+</button>
+              </div>
+            </td>
+            <td><strong>${formatCurrency(total)}</strong></td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function changeQty(productId, change) {
+      const currentQty = cart[productId] || 0;
+      const nextQty = Math.max(0, currentQty + change);
+      if (nextQty === 0) {
+        delete cart[productId];
+      } else {
+        cart[productId] = nextQty;
+      }
+      renderProducts();
+      updateCartSummary();
+    }
+
+    function getCartItems() {
+      return Object.entries(cart).map(([id, qty]) => {
+        const product = products.find(item => item.id === Number(id));
+        return { ...product, qty, total: product.price * qty };
+      });
+    }
+
+    function updateCartSummary() {
+      const selectedItems = document.getElementById("selectedItems");
+      const itemCount = document.getElementById("itemCount");
+      const cartTotal = document.getElementById("cartTotal");
+      const grandTotal = document.getElementById("grandTotal");
+      const items = getCartItems();
+      const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
+      const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+
+      if (items.length === 0) {
+        selectedItems.className = "empty-state";
+        selectedItems.innerHTML = "No products selected yet.";
+      } else {
+        selectedItems.className = "";
+        selectedItems.innerHTML = items.map(item => `
+          <div class="summary-line">
+            <span>${item.name} × ${item.qty}</span>
+            <strong>${formatCurrency(item.total)}</strong>
+          </div>
+        `).join("");
+      }
+
+      itemCount.textContent = totalQty;
+      cartTotal.textContent = formatCurrency(totalAmount);
+      grandTotal.textContent = formatCurrency(totalAmount);
+    }
+
+    function sendWhatsAppEnquiry() {
+      const items = getCartItems();
+      if (items.length === 0) {
+        alert("Please select at least one product before sending enquiry.");
+        return;
+      }
+
+      const name = document.getElementById("customerName").value.trim();
+      const mobile = document.getElementById("customerMobile").value.trim();
+      const city = document.getElementById("customerCity").value.trim();
+      const customerMessage = document.getElementById("customerMessage").value.trim();
+
+      if (!name || !mobile || !city) {
+        alert("Please enter your name, mobile number and city/area.");
+        return;
+      }
+
+      const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+      const productLines = items.map(item => `- ${item.name} | Qty: ${item.qty} | Total: ${formatCurrency(item.total)}`).join("%0A");
+
+      const message = `Retail Firecrackers Enquiry%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(customerMessage || "No special request")}%0A%0ANote: Please confirm availability, permitted products and next steps.`;
+
+      const whatsappUrl = `https://wa.me/${officialWhatsappNumber}?text=${message}`;
+      window.open(whatsappUrl, "_blank");
+    }
+
+    document.getElementById("searchInput").addEventListener("input", renderProducts);
+    document.getElementById("categoryFilter").addEventListener("change", renderProducts);
+
+    renderProducts();
+    updateCartSummary();
+  </script>
 </body>
 </html>
