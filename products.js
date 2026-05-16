@@ -1406,11 +1406,11 @@ const products = [
 const CART_STORAGE_KEY = 'raamdevEstimateCart';
 const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '{}');
 const cart = savedCart && typeof savedCart === 'object' ? savedCart : {};
+const categoryOrder = [...new Set(products.map(product => product.category))];
 
 function saveCart() {
   localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
 }
-const categoryOrder = [...new Set(products.map(product => product.category))];
 
 function categorySlug(category) {
   return category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
@@ -1420,9 +1420,47 @@ function formatCurrency(value) {
   return '₹' + Number(value).toLocaleString('en-IN', { minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 });
 }
 
+function isNetRate(product) {
+  return product.category.includes('Net Rates') || Number(product.mrp) === Number(product.price);
+}
+
+function productUseTag(product) {
+  const c = product.category.toLowerCase();
+  if (c.includes('gift') || c.includes('combo')) return 'Family Pack';
+  if (c.includes('sparkler') || c.includes('children')) return 'Kids Friendly';
+  if (c.includes('flower') || c.includes('chakker')) return 'Family Favourite';
+  if (c.includes('night') || c.includes('fancy') || c.includes('shot')) return 'Night Show';
+  if (c.includes('rocket') || c.includes('bomb') || c.includes('wala')) return 'Classic Choice';
+  return 'Festival Item';
+}
+
+
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function getProductImage(product) {
+  return product.image || 'assets/default-product.jpg';
+}
+
+function getProductVideoMarkup(product) {
+  if (product.video) {
+    return `<a class="product-video-link active" href="${escapeHtml(product.video)}" target="_blank" rel="noopener">VIDEO</a>`;
+  }
+  return `<span class="product-video-link inactive" aria-label="Product video not available yet">VIDEO</span>`;
+}
+
 function renderProducts() {
   const productBody = document.getElementById('productBody');
   const searchInput = document.getElementById('searchInput');
+  if (!productBody) return;
+
   const searchValue = (searchInput?.value || '').toLowerCase().trim();
   const selectedCategory = new URLSearchParams(window.location.search).get('category');
 
@@ -1432,43 +1470,63 @@ function renderProducts() {
       !searchValue ||
       product.name.toLowerCase().includes(searchValue) ||
       product.category.toLowerCase().includes(searchValue) ||
+      product.unit.toLowerCase().includes(searchValue) ||
       String(product.id).includes(searchValue)
     ));
 
     if (categoryProducts.length === 0) return;
-
     const isSelected = selectedCategory === category;
-    html += `<tr class="category-row ${isSelected ? 'selected-category' : ''}" id="category-${categorySlug(category)}">
-      <td colspan="7">${category}</td>
-    </tr>`;
+    html += `<div class="tile-category-heading ${isSelected ? 'selected-category' : ''}" id="category-${categorySlug(category)}">
+      <span>${category}</span>
+      <small>${categoryProducts.length} Items</small>
+    </div>`;
 
-    html += categoryProducts.map(product => {
-      const qty = cart[product.id] || 0;
+    html += `<div class="product-tile-grid">` + categoryProducts.map(product => {
+      const qty = Number(cart[product.id] || 0);
       const total = qty * product.price;
-      return `<tr>
-        <td>${product.id}</td>
-        <td><div class="product-name">${product.name}</div></td>
-        <td>${product.unit}</td>
-        <td><div class="price-old">${formatCurrency(product.mrp)}</div></td>
-        <td><div class="price-new">${formatCurrency(product.price)}</div></td>
-        <td>
-          <div class="qty-control">
-            <button onclick="changeQty(${product.id}, -1)" aria-label="Decrease quantity">−</button>
-            <input class="qty-input" type="number" min="0" step="1" value="${qty}" onchange="setQty(${product.id}, this.value)" oninput="setQty(${product.id}, this.value)" aria-label="Quantity for ${product.name}">
-            <button onclick="changeQty(${product.id}, 1)" aria-label="Increase quantity">+</button>
+      const netRate = isNetRate(product);
+      const imageSrc = getProductImage(product);
+      const safeName = escapeHtml(product.name);
+      const videoMarkup = getProductVideoMarkup(product);
+      return `<article class="product-tile" data-product-id="${product.id}">
+        <div class="product-media-box">
+          <button type="button" class="product-photo-button" onclick="openImagePopup(this.dataset.fullImage, this.dataset.productName)" data-full-image="${escapeHtml(imageSrc)}" data-product-name="${safeName}" aria-label="View larger image of ${safeName}">
+            <img class="product-photo" src="${escapeHtml(imageSrc)}" alt="${safeName}" loading="lazy">
+            <small>RT-${String(product.id).padStart(3, '0')}</small>
+          </button>
+          <div class="product-video-slot">${videoMarkup}</div>
+        </div>
+        <div class="product-tile-content">
+          <div class="tile-topline">
+            <span class="serial-chip">S.No ${product.id}</span>
+            <span class="tag ${netRate ? 'tag-net' : ''}">${netRate ? 'Net Rate' : '75% Off'}</span>
           </div>
-        </td>
-        <td><strong>${formatCurrency(total)}</strong></td>
-      </tr>`;
-    }).join('');
+          <h3>${product.name}</h3>
+          <p class="product-category-text">${product.category}</p>
+          <div class="product-tag-row"><span>${productUseTag(product)}</span><span>Unit: ${product.unit}</span></div>
+          <div class="price-row">
+            <div><small>MRP</small><strong class="price-old">${formatCurrency(product.mrp)}</strong></div>
+            <div><small>${netRate ? 'Net Price' : 'After Discount'}</small><strong class="price-new">${formatCurrency(product.price)}</strong></div>
+          </div>
+          <div class="tile-qty-row">
+            <div class="qty-control">
+              <button onclick="changeQty(${product.id}, -1)" aria-label="Decrease quantity">−</button>
+              <input class="qty-input" type="number" min="0" step="1" value="${qty}" onchange="setQty(${product.id}, this.value)" oninput="setQty(${product.id}, this.value)" aria-label="Quantity for ${product.name}">
+              <button onclick="changeQty(${product.id}, 1)" aria-label="Increase quantity">+</button>
+            </div>
+            <div class="tile-total"><small>Total</small><strong>${formatCurrency(total)}</strong></div>
+          </div>
+        </div>
+      </article>`;
+    }).join('') + `</div>`;
   });
 
-  productBody.innerHTML = html || '<tr><td colspan="7" class="empty-cell">No products found.</td></tr>';
+  productBody.innerHTML = html || '<div class="empty-cell">No products found.</div>';
   updateCartSummary();
 }
 
 function changeQty(productId, change) {
-  const current = cart[productId] || 0;
+  const current = Number(cart[productId] || 0);
   const next = Math.max(0, current + change);
   if (next === 0) { delete cart[productId]; } else { cart[productId] = next; }
   saveCart();
@@ -1481,19 +1539,18 @@ function setQty(productId, rawValue) {
   if (value === 0) { delete cart[productId]; } else { cart[productId] = value; }
   saveCart();
   updateCartSummary();
-  updateVisibleRowTotals();
+  updateVisibleTileTotals();
 }
 
-function updateVisibleRowTotals() {
-  document.querySelectorAll('.qty-input').forEach(input => {
-    const match = input.getAttribute('onchange')?.match(/setQty\((\d+)/);
-    if (!match) return;
-    const id = Number(match[1]);
+function updateVisibleTileTotals() {
+  document.querySelectorAll('.product-tile').forEach(tile => {
+    const id = Number(tile.dataset.productId);
     const product = products.find(item => item.id === id);
-    const row = input.closest('tr');
-    if (!product || !row) return;
-    input.value = cart[id] || 0;
-    row.querySelector('td:last-child strong').textContent = formatCurrency((cart[id] || 0) * product.price);
+    if (!product) return;
+    const input = tile.querySelector('.qty-input');
+    const total = tile.querySelector('.tile-total strong');
+    if (input) input.value = cart[id] || 0;
+    if (total) total.textContent = formatCurrency((cart[id] || 0) * product.price);
   });
 }
 
@@ -1501,7 +1558,7 @@ function getCartItems() {
   return Object.entries(cart).map(([id, qty]) => {
     const product = products.find(item => item.id === Number(id));
     return { ...product, qty: Number(qty), total: product.price * Number(qty) };
-  });
+  }).filter(item => item && item.qty > 0);
 }
 
 function updateCartSummary() {
@@ -1509,6 +1566,8 @@ function updateCartSummary() {
   const itemCount = document.getElementById('itemCount');
   const cartTotal = document.getElementById('cartTotal');
   const grandTotal = document.getElementById('grandTotal');
+  const mobileCartText = document.getElementById('mobileCartText');
+  const mobileCartBar = document.getElementById('mobileCartBar');
   if (!selectedItems || !itemCount || !cartTotal || !grandTotal) return;
 
   const items = getCartItems();
@@ -1519,29 +1578,37 @@ function updateCartSummary() {
     selectedItems.className = 'empty-state';
     selectedItems.innerHTML = 'No products selected yet.';
   } else {
-    selectedItems.className = '';
+    selectedItems.className = 'selected-list';
     selectedItems.innerHTML = items.map(item => `<div class="summary-line"><span>${item.id}. ${item.name} × ${item.qty}</span><strong>${formatCurrency(item.total)}</strong></div>`).join('');
   }
 
   itemCount.textContent = totalQty;
   cartTotal.textContent = formatCurrency(totalAmount);
   grandTotal.textContent = formatCurrency(totalAmount);
+
+  if (mobileCartText && mobileCartBar) {
+    mobileCartText.textContent = `Items: ${totalQty} | Total: ${formatCurrency(totalAmount)}`;
+    mobileCartBar.classList.toggle('has-items', totalQty > 0);
+  }
 }
 
+function generateEnquiryNumber() {
+  const now = new Date();
+  const stamp = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+  const suffix = Math.floor(1000 + Math.random() * 9000);
+  return `RT-${stamp}-${suffix}`;
+}
 
 function resetEstimate() {
   const hasSelections = Object.keys(cart).length > 0;
-  if (!hasSelections) {
-    alert('No selected items to clear.');
-    return;
-  }
+  if (!hasSelections) { alert('No selected items to clear.'); return; }
   const confirmReset = confirm('Clear all selected quantities and start a new estimate?');
   if (!confirmReset) return;
   Object.keys(cart).forEach(key => delete cart[key]);
   localStorage.removeItem(CART_STORAGE_KEY);
   renderProducts();
   updateCartSummary();
-  const wrapper = document.querySelector('.product-table-wrap');
+  const wrapper = document.querySelector('.product-tile-scroll');
   if (wrapper) wrapper.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -1555,9 +1622,10 @@ function sendWhatsAppEnquiry() {
   const msg = document.getElementById('customerMessage').value.trim();
   if (!name || !mobile || !city) { alert('Please enter your name, mobile number and city/area.'); return; }
 
+  const enquiryNo = generateEnquiryNumber();
   const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
   const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Total: ${formatCurrency(item.total)}`).join('%0A');
-  const message = `RAAMDEV TRADERS Price List Enquiry%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps.`;
+  const message = `RAAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
   window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`, '_blank');
 }
 
@@ -1565,15 +1633,48 @@ function scrollToSelectedCategory() {
   const selectedCategory = new URLSearchParams(window.location.search).get('category');
   if (!selectedCategory) return;
   const target = document.getElementById(`category-${categorySlug(selectedCategory)}`);
-  const wrapper = document.querySelector('.product-table-wrap');
-  const layout = document.querySelector('.products-layout');
+  const wrapper = document.querySelector('.product-tile-scroll');
+  const layout = document.querySelector('.tile-layout');
   if (target && wrapper) {
     setTimeout(() => {
       if (layout) window.scrollTo({ top: layout.offsetTop - 105, behavior: 'smooth' });
-      wrapper.scrollTo({ top: Math.max(0, target.offsetTop - 58), behavior: 'smooth' });
-    }, 450);
+      wrapper.scrollTo({ top: Math.max(0, target.offsetTop - 20), behavior: 'smooth' });
+    }, 350);
   }
 }
+
+
+function openImagePopup(imageSrc, productName) {
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  const modalCaption = document.getElementById('modalCaption');
+  if (!modal || !modalImage) return;
+  modalImage.src = imageSrc;
+  modalImage.alt = productName || 'Product image';
+  if (modalCaption) modalCaption.textContent = productName || 'Product image';
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+}
+
+function closeImagePopup() {
+  const modal = document.getElementById('imageModal');
+  const modalImage = document.getElementById('modalImage');
+  if (!modal) return;
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  if (modalImage) modalImage.src = '';
+}
+
+document.addEventListener('click', event => {
+  const modal = document.getElementById('imageModal');
+  if (modal && modal.classList.contains('open') && event.target === modal) closeImagePopup();
+});
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape') closeImagePopup();
+});
 
 document.getElementById('searchInput')?.addEventListener('input', renderProducts);
 renderProducts();

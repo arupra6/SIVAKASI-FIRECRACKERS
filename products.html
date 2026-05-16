@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="RAAMDEV TRADERS firecrackers price list with estimate cart and WhatsApp enquiry." />
+  <meta name="description" content="RAAMDEV TRADERS firecrackers price list with product tiles, estimate cart and WhatsApp enquiry." />
   <title>Price List | RAAMDEV TRADERS</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="products-page">
+<body class="products-page product-tiles-page">
 <header>
   <div class="top-alert">Customer Safety First: Verify RAAMDEV TRADERS official contact before making any payment.</div>
   <nav class="nav">
@@ -35,48 +35,69 @@
     <div class="container">
       <div class="hero-badge">RAAMDEV TRADERS</div>
       <h2>Price List</h2>
-      <p>All products are listed in one table with category headers. Select quantities, prepare your estimate and send enquiry to official WhatsApp.</p>
+      <p>Browse product tiles by category, select quantities and prepare your estimate. Final confirmation will be done only through official contact.</p>
     </div>
   </section>
-  <section class="section section-soft">
-    <div class="container products-layout">
-      <div>
-        <div class="product-tools product-tools-single">
-          <input type="search" id="searchInput" placeholder="Search product name or category..." aria-label="Search product name or category">
+
+  <section class="section section-soft product-page-section">
+    <div class="container">
+      <div class="offer-banner">
+        <div>
+          <span class="offer-kicker">Deepavali Offer</span>
+          <h2>75% Discount Price List</h2>
+          <p>Discount applies to selected catalogue items. Gift Box and Combo Pack items are shown as <strong>Net Rates / No Discount</strong>.</p>
         </div>
-        <div class="scroll-note">Scroll inside the price-list box. Your selected quantities will be saved while you visit other pages.</div>
-        <div class="product-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>S.No</th>
-                <th>Crackers Name</th>
-                <th>Unit</th>
-                <th>MRP Amount</th>
-                <th>After Discount</th>
-                <th>Qty</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody id="productBody"></tbody>
-          </table>
-        </div>
+        <a class="btn btn-primary" href="#customerDetails">Fill Customer Details</a>
       </div>
-      <aside class="estimate-card">
-        <h3>Estimate Cart</h3>
-        <div id="selectedItems" class="empty-state">No products selected yet.</div>
-        <div class="summary-line"><span>Items</span><strong id="itemCount">0</strong></div>
-        <div class="summary-line"><span>Estimate Total</span><strong id="cartTotal">₹0</strong></div>
-        <div class="grand-total" id="grandTotal">₹0</div>
-        <div class="form-group"><label for="customerName">Customer Name</label><input type="text" id="customerName" placeholder="Enter your name"></div>
-        <div class="form-group"><label for="customerMobile">Mobile Number</label><input type="tel" id="customerMobile" placeholder="Enter your mobile number"></div>
-        <div class="form-group"><label for="customerCity">City / Area</label><input type="text" id="customerCity" placeholder="Enter city or area"></div>
-        <div class="form-group"><label for="customerMessage">Message</label><textarea id="customerMessage" rows="3" placeholder="Any special request"></textarea></div>
-        <p class="small-note">This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.</p>
-        <button class="btn btn-green full" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
-        <button class="btn btn-dark full" onclick="window.print()">Print / Save Estimate</button>
-        <button class="btn btn-reset full" onclick="resetEstimate()">Clear Estimate / Reset Selection</button>
-      </aside>
+
+      <div class="buyer-helper-row">
+        <span>🏷️ Transparent MRP & Offer Price</span>
+        <span>🧾 Estimate only, not online purchase</span>
+        <span>✅ Confirmation through official contact</span>
+        <span>🪔 Family-friendly category browsing</span>
+      </div>
+
+      <div class="product-tools product-tools-single tile-search">
+        <input type="search" id="searchInput" placeholder="Search product name, category or item number..." aria-label="Search product name or category">
+      </div>
+
+      <div class="products-layout tile-layout">
+        <div class="product-panel">
+          <div class="scroll-note">Scroll inside this product tile window. Your selected quantities are saved while you visit other pages.</div>
+          <div class="product-tile-scroll" id="productScroll">
+            <div id="productBody" class="product-tile-list"></div>
+          </div>
+        </div>
+
+        <aside class="estimate-card estimate-summary-only">
+          <h3>Estimate Cart</h3>
+          <div id="selectedItems" class="empty-state">No products selected yet.</div>
+          <div class="summary-line"><span>Items</span><strong id="itemCount">0</strong></div>
+          <div class="summary-line"><span>Estimate Total</span><strong id="cartTotal">₹0</strong></div>
+          <div class="grand-total" id="grandTotal">₹0</div>
+          <a class="btn btn-primary full" href="#customerDetails">Continue to Customer Details</a>
+        </aside>
+      </div>
+
+      <section id="customerDetails" class="customer-details-card">
+        <div class="customer-details-head">
+          <span>Final Step</span>
+          <h2>Customer Details & Enquiry</h2>
+          <p>Enter your details after selecting products. The enquiry will go to the official WhatsApp number for confirmation.</p>
+        </div>
+        <div class="customer-form-grid">
+          <div class="form-group"><label for="customerName">Customer Name</label><input type="text" id="customerName" placeholder="Enter your name"></div>
+          <div class="form-group"><label for="customerMobile">Mobile Number</label><input type="tel" id="customerMobile" placeholder="Enter your mobile number"></div>
+          <div class="form-group"><label for="customerCity">City / Area</label><input type="text" id="customerCity" placeholder="Enter city or area"></div>
+          <div class="form-group form-group-wide"><label for="customerMessage">Message</label><textarea id="customerMessage" rows="3" placeholder="Any special request"></textarea></div>
+        </div>
+        <p class="small-note emphasized-note">This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.</p>
+        <div class="customer-actions">
+          <button class="btn btn-green" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
+          <button class="btn btn-dark" onclick="window.print()">Print / Save Estimate</button>
+          <button class="btn btn-reset" onclick="resetEstimate()">Clear Estimate / Reset Selection</button>
+        </div>
+      </section>
     </div>
   </section>
 </main>
@@ -96,10 +117,19 @@
     </div>
   </div>
 </footer>
+<div class="mobile-cart-bar" id="mobileCartBar"><span id="mobileCartText">Items: 0 | Total: ₹0</span><a href="#customerDetails">View Estimate</a></div>
 <div class="mobile-bar">
   <a href="tel:+919999999999">Call</a>
   <a href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
   <a href="products.html">Price List</a>
+</div>
+
+<div class="image-modal" id="imageModal" aria-hidden="true" role="dialog" aria-label="Product image preview">
+  <button class="image-modal-close" type="button" onclick="closeImagePopup()" aria-label="Close product image preview">×</button>
+  <div class="image-modal-inner">
+    <img id="modalImage" src="" alt="Product image preview" />
+    <p id="modalCaption"></p>
+  </div>
 </div>
 <script>function toggleMenu(){document.getElementById('navLinks').classList.toggle('open')}</script>
 <script src="products.js"></script>

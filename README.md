@@ -1,32 +1,26 @@
 # RAAMDEV TRADERS Website
 
-GitHub Pages-ready multi-page website.
-
-## Files
-- `index.html` - Home page
-- `products.html` - Price List and estimate cart
-- `verify.html` - verification and scam warning
-- `how-it-works.html` - enquiry process
-- `safety.html` - firecracker safety guidelines
-- `contact.html` - contact page
-- `style.css` - website styling and responsive backgrounds
-- `products.js` - product list and estimate cart logic
-- `assets/` - logo and background images
-
-## Update placeholders before public launch
-Search and replace:
-- `+91 99999 99999`
-- `919999999999`
-- `yourbusiness@email.com`
-- address placeholder text
-
-## Upload to GitHub
-Upload all files and the `assets` folder into the root of your `sivakasi-firecrackers` repository, then commit changes.
-
+Static HTML/CSS/JavaScript website for RAAMDEV TRADERS firecrackers catalogue, price list, estimate cart and enquiry workflow.
 
 ## Latest update
-- Added internal scrolling price-list table.
-- Preserves selected quantities with browser storage.
-- Added Clear Estimate / Reset Selection button.
-- Improved desktop background positioning and home-page text contrast.
-- Fixed sticky header overlap on the first product row.
+
+- Price List changed from table/list to modern product tile layout.
+- Each product tile includes a future photo placeholder.
+- 75% discount banner added at the top of the Price List page.
+- Gift Box and Combo Pack items are marked as Net Rate / No Discount.
+- Customer details form moved below the product tile scroll area.
+- Estimate cart summary remains separate.
+- Selected quantities are saved in browser localStorage.
+- Reset button clears all selected quantities.
+- WhatsApp enquiry includes generated enquiry number.
+- Added customer-attraction sections: best sellers, family packs, verification checklist, buyer trust badges and Tamil trust message.
+
+## Important placeholders to update later
+
+- Official phone number
+- Official WhatsApp number
+- Email address
+- Full verified shop address
+- Google Maps link
+- Real shop photos
+- Product photos
