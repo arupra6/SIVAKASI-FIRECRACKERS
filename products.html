@@ -45,7 +45,7 @@
         <div>
           <span class="offer-kicker">Deepavali Offer</span>
           <h2>75% Discount Price List</h2>
-          <p>Discount applies to selected catalogue items. Gift Box and Combo Pack items are shown as <strong>Net Rates / No Discount</strong>.</p>
+          <p>Discount applies to selected catalogue items. Gift Box and Combo Pack items are shown as <strong>Net Rates / No Discount</strong>. <strong>Minimum enquiry value: ₹3,000.</strong></p>
         </div>
         <a class="btn btn-primary" href="#customerDetails">Fill Customer Details</a>
       </div>
@@ -75,6 +75,7 @@
           <div class="summary-line"><span>Items</span><strong id="itemCount">0</strong></div>
           <div class="summary-line"><span>Estimate Total</span><strong id="cartTotal">₹0</strong></div>
           <div class="grand-total" id="grandTotal">₹0</div>
+          <div class="minimum-status" id="minimumStatus">Minimum enquiry value: ₹3,000</div>
           <a class="btn btn-primary full" href="#customerDetails">Continue to Customer Details</a>
         </aside>
       </div>
@@ -89,14 +90,15 @@
           <div class="form-group"><label for="customerName">Customer Name</label><input type="text" id="customerName" placeholder="Enter your name"></div>
           <div class="form-group"><label for="customerMobile">Mobile Number</label><input type="tel" id="customerMobile" placeholder="Enter your mobile number"></div>
           <div class="form-group"><label for="customerCity">City / Area</label><input type="text" id="customerCity" placeholder="Enter city or area"></div>
-          <div class="form-group"><label for="customerDistrict">District</label><input type="text" id="customerDistrict" placeholder="Enter district"></div>
-          <div class="form-group"><label for="customerPincode">PIN Code</label><input type="text" id="customerPincode" inputmode="numeric" pattern="[0-9]*" placeholder="Enter PIN code"></div>
+          <div class="form-group"><label for="customerPincode">PIN Code</label><input type="text" id="customerPincode" inputmode="numeric" pattern="[0-9]*" maxlength="6" placeholder="Enter Tamil Nadu PIN code"><small class="field-help" id="pinLookupStatus">Enter 6-digit PIN code to auto-fill district and postal area where available.</small></div>
+          <div class="form-group district-autocomplete-wrap"><label for="customerDistrict">District</label><input type="text" id="customerDistrict" autocomplete="off" placeholder="Type or select district"><div class="district-suggestions" id="districtSuggestions" role="listbox" aria-label="Tamil Nadu district suggestions"></div></div>
+          <div class="form-group"><label for="customerPostalArea">Postal Area</label><input type="text" id="customerPostalArea" placeholder="Auto-filled from PIN code or enter manually"></div>
           <div class="form-group form-group-wide"><label for="customerMessage">Message</label><textarea id="customerMessage" rows="3" placeholder="Any special request"></textarea></div>
         </div>
         <p class="small-note emphasized-note">This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.</p>
         <div class="customer-actions">
-          <button class="btn btn-green" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
-          <button class="btn btn-dark" onclick="window.print()">Print / Save Estimate</button>
+          <button class="btn btn-green" id="sendEnquiryButton" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
+          <button class="btn btn-dark" id="printEstimateButton" onclick="printSelectedEstimate()">Print / Save Estimate</button>
           <button class="btn btn-reset" onclick="resetEstimate()">Clear Estimate / Reset Selection</button>
         </div>
       </section>

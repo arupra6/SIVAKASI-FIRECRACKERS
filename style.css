@@ -528,3 +528,44 @@ body.modal-open{overflow:hidden}
   .image-modal-inner img{max-height:68svh}
   .image-modal-close{top:10px;right:10px;width:40px;height:40px;font-size:27px}
 }
+
+/* Comments 28-34 updates: offer banner, location helper, minimum value, print controls */
+.festival-offer-card{
+  display:grid;
+  grid-template-columns:auto 1fr auto;
+  gap:22px;
+  align-items:center;
+  background:linear-gradient(135deg,rgba(95,7,7,.98),rgba(139,17,17,.94) 48%,rgba(249,115,22,.9));
+  color:#fff8df;
+  border:2px solid var(--gold);
+  border-radius:30px;
+  padding:28px;
+  box-shadow:0 18px 45px rgba(95,7,7,.22);
+  position:relative;
+  overflow:hidden;
+}
+.festival-offer-card:before{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:radial-gradient(circle at 20% 20%,rgba(247,201,72,.22),transparent 23%),radial-gradient(circle at 85% 10%,rgba(255,255,255,.16),transparent 16%);
+  pointer-events:none;
+}
+.offer-burst{
+  width:126px;
+  height:126px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  background:radial-gradient(circle,#fff7b0 0,#f7c948 55%,#f97316 100%);
+  color:var(--deep-red);
+  font-size:38px;
+  font-weight:1000;
+  border:4px solid rgba(255,255,255,.75);
+  box-shadow:0 10px 30px rgba(0,0,0,.2);
+  position:relative;
+  z-index:1;
+}
+.festival-offer-content,.festival-offer-actions{position:relative;z-index:1}
+.festival-offer-content h2{font-size:clamp(30px,4vw,54px);line-height:1;margin:6px 0 10px;color:var(--gold);text-shadow:0 6px 20px rgba(0,0,0,.25)}
+.festival-offer-content p{max-width:760px;font-size:17px}.offer-points{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.offer-points span{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:8px 11px;font-weight:900;font-size:13px}.festival-offer-actions{display:flex;flex-direction:column;gap:10px}.minimum-status{margin:12px 0 14px;padding:10px 12px;border-radius:14px;font-weight:900;font-size:13px;border:1px solid var(--border);background:#fff8dc;color:var(--deep-red)}.minimum-status.success{background:#e8f7ef;color:#0b6b43;border-color:#9bd4b6}.minimum-status.warning{background:#fff8dc;color:#9a3412;border-color:#f7c948}.btn:disabled,.btn-disabled{opacity:.55;cursor:not-allowed;transform:none!important;box-shadow:none!important;filter:grayscale(.15)}.field-help{display:block;margin-top:6px;color:var(--muted);font-size:12px;font-weight:700;line-height:1.35}.district-autocomplete-wrap{position:relative}.district-suggestions{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:50;background:#fffdf2;border:1px solid var(--gold);border-radius:14px;box-shadow:0 14px 30px rgba(0,0,0,.14);padding:6px;display:none;max-height:240px;overflow:auto}.district-suggestions.open{display:block}.district-suggestion-item{display:block;width:100%;border:0;background:transparent;color:var(--navy);text-align:left;padding:10px 12px;border-radius:10px;font-weight:800;cursor:pointer}.district-suggestion-item:hover,.district-suggestion-item:focus{background:#fff2b8;color:var(--deep-red);outline:none}.customer-actions .btn{min-height:48px}.customer-actions .btn-dark{background:#111827;color:#fff}@media(max-width:900px){.festival-offer-card{grid-template-columns:1fr;text-align:center}.offer-burst{margin:auto}.festival-offer-actions{flex-direction:row;justify-content:center;flex-wrap:wrap}}@media(max-width:640px){.festival-offer-card{padding:20px;border-radius:24px}.offer-burst{width:100px;height:100px;font-size:31px}.offer-points{justify-content:center}.festival-offer-actions .btn{width:100%}.district-suggestions{position:absolute;max-height:210px}.minimum-status{font-size:12px}}

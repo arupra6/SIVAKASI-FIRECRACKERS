@@ -1,5 +1,66 @@
 const officialWhatsappNumber = '919999999999';
 
+const MINIMUM_ENQUIRY_VALUE = 3000;
+
+const tamilNaduDistricts = [
+  'Ariyalur', 'Chengalpattu', 'Chennai', 'Coimbatore', 'Cuddalore', 'Dharmapuri', 'Dindigul',
+  'Erode', 'Kallakurichi', 'Kanchipuram', 'Kanniyakumari', 'Karur', 'Krishnagiri', 'Madurai',
+  'Mayiladuthurai', 'Nagapattinam', 'Namakkal', 'Nilgiris', 'Perambalur', 'Pudukkottai',
+  'Ramanathapuram', 'Ranipet', 'Salem', 'Sivagangai', 'Tenkasi', 'Thanjavur', 'Theni',
+  'Thoothukudi', 'Tiruchirappalli', 'Tirunelveli', 'Tirupathur', 'Tiruppur', 'Tiruvallur',
+  'Tiruvannamalai', 'Tiruvarur', 'Vellore', 'Viluppuram', 'Virudhunagar'
+];
+
+const exactTamilNaduPinLookup = {
+  '626204': { district: 'Virudhunagar', postalArea: 'Sattur / Paraipatti area' },
+  '608302': { district: 'Cuddalore', postalArea: 'Kattumannarkoil / Chidambaram area' },
+  '608601': { district: 'Cuddalore', postalArea: 'Chidambaram / Bhuvanagiri area' }
+};
+
+const tamilNaduPinPrefixLookup = {
+  '600': { district: 'Chennai', postalArea: 'Chennai postal area' },
+  '601': { district: 'Tiruvallur', postalArea: 'Tiruvallur / Chennai suburban postal area' },
+  '602': { district: 'Tiruvallur', postalArea: 'Tiruvallur / Kanchipuram postal area' },
+  '603': { district: 'Chengalpattu', postalArea: 'Chengalpattu postal area' },
+  '604': { district: 'Tiruvannamalai', postalArea: 'Tiruvannamalai / Villupuram postal area' },
+  '605': { district: 'Viluppuram', postalArea: 'Viluppuram postal area' },
+  '606': { district: 'Tiruvannamalai', postalArea: 'Tiruvannamalai / Kallakurichi postal area' },
+  '607': { district: 'Cuddalore', postalArea: 'Cuddalore postal area' },
+  '608': { district: 'Cuddalore', postalArea: 'Chidambaram / Cuddalore postal area' },
+  '609': { district: 'Mayiladuthurai', postalArea: 'Mayiladuthurai / Nagapattinam postal area' },
+  '610': { district: 'Tiruvarur', postalArea: 'Tiruvarur postal area' },
+  '611': { district: 'Nagapattinam', postalArea: 'Nagapattinam postal area' },
+  '612': { district: 'Thanjavur', postalArea: 'Kumbakonam / Thanjavur postal area' },
+  '613': { district: 'Thanjavur', postalArea: 'Thanjavur postal area' },
+  '614': { district: 'Thanjavur', postalArea: 'Thanjavur / Tiruvarur postal area' },
+  '620': { district: 'Tiruchirappalli', postalArea: 'Tiruchirappalli city postal area' },
+  '621': { district: 'Tiruchirappalli', postalArea: 'Tiruchirappalli / Perambalur / Ariyalur postal area' },
+  '622': { district: 'Pudukkottai', postalArea: 'Pudukkottai postal area' },
+  '623': { district: 'Ramanathapuram', postalArea: 'Ramanathapuram postal area' },
+  '624': { district: 'Dindigul', postalArea: 'Dindigul postal area' },
+  '625': { district: 'Madurai', postalArea: 'Madurai / Theni postal area' },
+  '626': { district: 'Virudhunagar', postalArea: 'Virudhunagar / Sivakasi / Sattur postal area' },
+  '627': { district: 'Tirunelveli', postalArea: 'Tirunelveli / Tenkasi postal area' },
+  '628': { district: 'Thoothukudi', postalArea: 'Thoothukudi postal area' },
+  '629': { district: 'Kanniyakumari', postalArea: 'Kanniyakumari postal area' },
+  '630': { district: 'Sivagangai', postalArea: 'Sivagangai / Karaikudi postal area' },
+  '631': { district: 'Ranipet', postalArea: 'Ranipet / Arakkonam postal area' },
+  '632': { district: 'Vellore', postalArea: 'Vellore / Ranipet / Tirupathur postal area' },
+  '635': { district: 'Krishnagiri', postalArea: 'Krishnagiri / Dharmapuri / Tirupathur postal area' },
+  '636': { district: 'Salem', postalArea: 'Salem / Dharmapuri postal area' },
+  '637': { district: 'Namakkal', postalArea: 'Namakkal postal area' },
+  '638': { district: 'Erode', postalArea: 'Erode / Tiruppur postal area' },
+  '639': { district: 'Karur', postalArea: 'Karur postal area' },
+  '641': { district: 'Coimbatore', postalArea: 'Coimbatore / Tiruppur postal area' },
+  '642': { district: 'Coimbatore', postalArea: 'Pollachi / Coimbatore postal area' },
+  '643': { district: 'Nilgiris', postalArea: 'Nilgiris postal area' }
+};
+
+let isAutoFillingLocation = false;
+let districtManuallyEdited = false;
+let postalAreaManuallyEdited = false;
+
+
 const products = [
   {
     "id": 1,
@@ -1568,11 +1629,15 @@ function updateCartSummary() {
   const grandTotal = document.getElementById('grandTotal');
   const mobileCartText = document.getElementById('mobileCartText');
   const mobileCartBar = document.getElementById('mobileCartBar');
+  const minimumStatus = document.getElementById('minimumStatus');
+  const sendButton = document.getElementById('sendEnquiryButton');
+  const printButton = document.getElementById('printEstimateButton');
   if (!selectedItems || !itemCount || !cartTotal || !grandTotal) return;
 
   const items = getCartItems();
   const totalQty = items.reduce((sum, item) => sum + Number(item.qty), 0);
   const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  const minimumMet = totalAmount >= MINIMUM_ENQUIRY_VALUE;
 
   if (items.length === 0) {
     selectedItems.className = 'empty-state';
@@ -1585,6 +1650,24 @@ function updateCartSummary() {
   itemCount.textContent = totalQty;
   cartTotal.textContent = formatCurrency(totalAmount);
   grandTotal.textContent = formatCurrency(totalAmount);
+
+  if (minimumStatus) {
+    if (!minimumMet) {
+      const balance = Math.max(0, MINIMUM_ENQUIRY_VALUE - totalAmount);
+      minimumStatus.className = 'minimum-status warning';
+      minimumStatus.textContent = `Minimum enquiry value is ₹3,000. Add ${formatCurrency(balance)} more to proceed.`;
+    } else {
+      minimumStatus.className = 'minimum-status success';
+      minimumStatus.textContent = 'Minimum enquiry value reached. You can proceed.';
+    }
+  }
+
+  [sendButton, printButton].forEach(button => {
+    if (!button) return;
+    button.disabled = !minimumMet;
+    button.classList.toggle('btn-disabled', !minimumMet);
+    button.title = minimumMet ? '' : 'Minimum enquiry value is ₹3,000';
+  });
 
   if (mobileCartText && mobileCartBar) {
     mobileCartText.textContent = `Items: ${totalQty} | Total: ${formatCurrency(totalAmount)}`;
@@ -1612,22 +1695,147 @@ function resetEstimate() {
   if (wrapper) wrapper.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function sendWhatsAppEnquiry() {
-  const items = getCartItems();
-  if (items.length === 0) { alert('Please select at least one product before sending enquiry.'); return; }
 
-  const name = document.getElementById('customerName').value.trim();
-  const mobile = document.getElementById('customerMobile').value.trim();
-  const city = document.getElementById('customerCity').value.trim();
-  const district = document.getElementById('customerDistrict').value.trim();
-  const pincode = document.getElementById('customerPincode').value.trim();
-  const msg = document.getElementById('customerMessage').value.trim();
-  if (!name || !mobile || !city || !district || !pincode) { alert('Please enter your name, mobile number, city/area, district and PIN code.'); return; }
+function getCartTotalAmount() {
+  return getCartItems().reduce((sum, item) => sum + item.total, 0);
+}
+
+function validateMinimumValue() {
+  const totalAmount = getCartTotalAmount();
+  if (totalAmount < MINIMUM_ENQUIRY_VALUE) {
+    alert(`Minimum enquiry value is ₹3,000. Please add ${formatCurrency(MINIMUM_ENQUIRY_VALUE - totalAmount)} more to proceed.`);
+    return false;
+  }
+  return true;
+}
+
+function getCustomerDetails() {
+  return {
+    name: document.getElementById('customerName')?.value.trim() || '',
+    mobile: document.getElementById('customerMobile')?.value.trim() || '',
+    city: document.getElementById('customerCity')?.value.trim() || '',
+    district: document.getElementById('customerDistrict')?.value.trim() || '',
+    postalArea: document.getElementById('customerPostalArea')?.value.trim() || '',
+    pincode: document.getElementById('customerPincode')?.value.trim() || '',
+    message: document.getElementById('customerMessage')?.value.trim() || ''
+  };
+}
+
+function validateCustomerDetails() {
+  const details = getCustomerDetails();
+  if (!details.name || !details.mobile || !details.city || !details.district || !details.postalArea || !details.pincode) {
+    alert('Please enter your name, mobile number, city/area, district, postal area and PIN code.');
+    return null;
+  }
+  return details;
+}
+
+function lookupTamilNaduPincode(pin) {
+  const cleanPin = String(pin || '').replace(/\D/g, '');
+  if (cleanPin.length !== 6) return null;
+  return exactTamilNaduPinLookup[cleanPin] || tamilNaduPinPrefixLookup[cleanPin.slice(0, 3)] || null;
+}
+
+function handlePincodeAutoFill() {
+  const pinInput = document.getElementById('customerPincode');
+  const districtInput = document.getElementById('customerDistrict');
+  const postalInput = document.getElementById('customerPostalArea');
+  const status = document.getElementById('pinLookupStatus');
+  if (!pinInput || !districtInput || !postalInput) return;
+  const cleanPin = pinInput.value.replace(/\D/g, '').slice(0, 6);
+  if (pinInput.value !== cleanPin) pinInput.value = cleanPin;
+
+  if (cleanPin.length < 6) {
+    if (status) status.textContent = 'Enter 6-digit PIN code to auto-fill district and postal area where available.';
+    return;
+  }
+
+  const location = lookupTamilNaduPincode(cleanPin);
+  isAutoFillingLocation = true;
+  if (location) {
+    if (!districtManuallyEdited || !districtInput.value.trim()) districtInput.value = location.district;
+    if (!postalAreaManuallyEdited || !postalInput.value.trim()) postalInput.value = location.postalArea;
+    if (status) status.textContent = `Matched: ${location.district} - ${location.postalArea}. You can edit if required.`;
+  } else {
+    if (status) status.textContent = 'PIN code not found in the Tamil Nadu helper list. Please enter district and postal area manually.';
+  }
+  isAutoFillingLocation = false;
+}
+
+function showDistrictSuggestions(filterText = '') {
+  const districtInput = document.getElementById('customerDistrict');
+  const suggestions = document.getElementById('districtSuggestions');
+  if (!districtInput || !suggestions) return;
+  const value = filterText.toLowerCase().trim();
+  const matches = tamilNaduDistricts.filter(district => district.toLowerCase().includes(value)).slice(0, 8);
+  if (!matches.length) {
+    suggestions.classList.remove('open');
+    suggestions.innerHTML = '';
+    return;
+  }
+  suggestions.innerHTML = matches.map(district => `<button type="button" class="district-suggestion-item" onclick="selectDistrictSuggestion('${escapeHtml(district)}')">${district}</button>`).join('');
+  suggestions.classList.add('open');
+}
+
+function selectDistrictSuggestion(district) {
+  const districtInput = document.getElementById('customerDistrict');
+  const suggestions = document.getElementById('districtSuggestions');
+  if (!districtInput) return;
+  districtInput.value = district;
+  districtManuallyEdited = true;
+  if (suggestions) suggestions.classList.remove('open');
+}
+
+function printSelectedEstimate() {
+  const items = getCartItems();
+  if (items.length === 0) { alert('Please select at least one product before printing.'); return; }
+  if (!validateMinimumValue()) return;
+  const details = validateCustomerDetails();
+  if (!details) return;
 
   const enquiryNo = generateEnquiryNumber();
   const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
-  const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Total: ${formatCurrency(item.total)}`).join('%0A');
-  const message = `RAAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0ADistrict: ${encodeURIComponent(district)}%0APIN Code: ${encodeURIComponent(pincode)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
+  const rows = items.map(item => `
+    <tr>
+      <td>${item.id}</td>
+      <td>${escapeHtml(item.name)}</td>
+      <td>${escapeHtml(item.unit)}</td>
+      <td>${item.qty}</td>
+      <td>${formatCurrency(item.price)}</td>
+      <td>${formatCurrency(item.total)}</td>
+    </tr>`).join('');
+
+  const printHtml = `<!DOCTYPE html><html><head><title>RAAMDEV TRADERS Estimate</title>
+    <style>
+      body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#101827}.estimate-head{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #8b1111;padding-bottom:12px;margin-bottom:18px}.estimate-head h1{margin:0;color:#8b1111;font-size:26px}.estimate-head p{margin:4px 0}.badge{display:inline-block;background:#fff2b8;color:#5f0707;padding:6px 10px;border-radius:999px;font-weight:800}.details{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:16px 0;padding:14px;background:#fff7df;border:1px solid #ead7a5;border-radius:12px}.details div{font-size:14px}table{width:100%;border-collapse:collapse;margin-top:14px}th{background:#5f0707;color:#f7c948;text-align:left}th,td{border:1px solid #ead7a5;padding:9px;font-size:13px}.total{text-align:right;font-size:22px;color:#8b1111;font-weight:900;margin-top:16px}.note{margin-top:18px;padding:12px;border:1px dashed #f97316;background:#fff7df;font-size:13px}.footer{margin-top:22px;text-align:center;color:#6b7280;font-size:12px}@media print{body{margin:14mm}.no-print{display:none}}
+    </style></head><body>
+      <div class="estimate-head"><div><h1>RAAMDEV TRADERS</h1><p>The Original Sivakasi Crackers</p><span class="badge">Customer Estimate Only</span></div><div><p><strong>Enquiry No:</strong> ${enquiryNo}</p><p><strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}</p></div></div>
+      <div class="details"><div><strong>Name:</strong> ${escapeHtml(details.name)}</div><div><strong>Mobile:</strong> ${escapeHtml(details.mobile)}</div><div><strong>City/Area:</strong> ${escapeHtml(details.city)}</div><div><strong>District:</strong> ${escapeHtml(details.district)}</div><div><strong>Postal Area:</strong> ${escapeHtml(details.postalArea)}</div><div><strong>PIN Code:</strong> ${escapeHtml(details.pincode)}</div></div>
+      <table><thead><tr><th>S.No</th><th>Product</th><th>Unit</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>
+      <div class="total">Grand Total: ${formatCurrency(totalAmount)}</div>
+      <div class="note"><strong>Important:</strong> This is an estimate only and not an online purchase confirmation. Final availability, permitted products, payment method and pickup/delivery details will be confirmed only through official RAAMDEV TRADERS contact. Minimum enquiry value: ₹3,000.</div>
+      <div class="footer">அனைவருக்கும் இனிய தீபாவளி நல்வாழ்த்துகள்</div>
+      <script>window.onload=function(){window.print();};<\/script>
+    </body></html>`;
+
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) { alert('Popup blocked. Please allow popups to print the estimate.'); return; }
+  printWindow.document.open();
+  printWindow.document.write(printHtml);
+  printWindow.document.close();
+}
+
+function sendWhatsAppEnquiry() {
+  const items = getCartItems();
+  if (items.length === 0) { alert('Please select at least one product before sending enquiry.'); return; }
+  if (!validateMinimumValue()) return;
+  const details = validateCustomerDetails();
+  if (!details) return;
+
+  const enquiryNo = generateEnquiryNumber();
+  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Rate: ${formatCurrency(item.price)} | Total: ${formatCurrency(item.total)}`).join('%0A');
+  const message = `RAAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(details.name)}%0AMobile: ${encodeURIComponent(details.mobile)}%0ACity/Area: ${encodeURIComponent(details.city)}%0ADistrict: ${encodeURIComponent(details.district)}%0APostal Area: ${encodeURIComponent(details.postalArea)}%0APIN Code: ${encodeURIComponent(details.pincode)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(details.message || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
   window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`, '_blank');
 }
 
@@ -1679,5 +1887,22 @@ document.addEventListener('keydown', event => {
 });
 
 document.getElementById('searchInput')?.addEventListener('input', renderProducts);
+
+document.getElementById('customerPincode')?.addEventListener('input', handlePincodeAutoFill);
+
+document.getElementById('customerDistrict')?.addEventListener('focus', event => showDistrictSuggestions(event.target.value));
+document.getElementById('customerDistrict')?.addEventListener('input', event => {
+  if (!isAutoFillingLocation) districtManuallyEdited = true;
+  showDistrictSuggestions(event.target.value);
+});
+document.getElementById('customerPostalArea')?.addEventListener('input', () => {
+  if (!isAutoFillingLocation) postalAreaManuallyEdited = true;
+});
+document.addEventListener('click', event => {
+  const wrap = document.querySelector('.district-autocomplete-wrap');
+  const suggestions = document.getElementById('districtSuggestions');
+  if (wrap && suggestions && !wrap.contains(event.target)) suggestions.classList.remove('open');
+});
+
 renderProducts();
 scrollToSelectedCategory();
