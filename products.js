@@ -1403,7 +1403,13 @@ const products = [
   }
 ];
 
-const cart = {};
+const CART_STORAGE_KEY = 'raamdevEstimateCart';
+const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '{}');
+const cart = savedCart && typeof savedCart === 'object' ? savedCart : {};
+
+function saveCart() {
+  localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+}
 const categoryOrder = [...new Set(products.map(product => product.category))];
 
 function categorySlug(category) {
@@ -1465,6 +1471,7 @@ function changeQty(productId, change) {
   const current = cart[productId] || 0;
   const next = Math.max(0, current + change);
   if (next === 0) { delete cart[productId]; } else { cart[productId] = next; }
+  saveCart();
   renderProducts();
 }
 
@@ -1472,6 +1479,7 @@ function setQty(productId, rawValue) {
   let value = parseInt(rawValue, 10);
   if (Number.isNaN(value) || value < 0) value = 0;
   if (value === 0) { delete cart[productId]; } else { cart[productId] = value; }
+  saveCart();
   updateCartSummary();
   updateVisibleRowTotals();
 }
@@ -1520,6 +1528,23 @@ function updateCartSummary() {
   grandTotal.textContent = formatCurrency(totalAmount);
 }
 
+
+function resetEstimate() {
+  const hasSelections = Object.keys(cart).length > 0;
+  if (!hasSelections) {
+    alert('No selected items to clear.');
+    return;
+  }
+  const confirmReset = confirm('Clear all selected quantities and start a new estimate?');
+  if (!confirmReset) return;
+  Object.keys(cart).forEach(key => delete cart[key]);
+  localStorage.removeItem(CART_STORAGE_KEY);
+  renderProducts();
+  updateCartSummary();
+  const wrapper = document.querySelector('.product-table-wrap');
+  if (wrapper) wrapper.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
 function sendWhatsAppEnquiry() {
   const items = getCartItems();
   if (items.length === 0) { alert('Please select at least one product before sending enquiry.'); return; }
@@ -1540,8 +1565,13 @@ function scrollToSelectedCategory() {
   const selectedCategory = new URLSearchParams(window.location.search).get('category');
   if (!selectedCategory) return;
   const target = document.getElementById(`category-${categorySlug(selectedCategory)}`);
-  if (target) {
-    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+  const wrapper = document.querySelector('.product-table-wrap');
+  const layout = document.querySelector('.products-layout');
+  if (target && wrapper) {
+    setTimeout(() => {
+      if (layout) window.scrollTo({ top: layout.offsetTop - 105, behavior: 'smooth' });
+      wrapper.scrollTo({ top: Math.max(0, target.offsetTop - 58), behavior: 'smooth' });
+    }, 450);
   }
 }
 

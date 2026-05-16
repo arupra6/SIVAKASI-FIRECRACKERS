@@ -22,3 +22,11 @@ Search and replace:
 
 ## Upload to GitHub
 Upload all files and the `assets` folder into the root of your `sivakasi-firecrackers` repository, then commit changes.
+
+
+## Latest update
+- Added internal scrolling price-list table.
+- Preserves selected quantities with browser storage.
+- Added Clear Estimate / Reset Selection button.
+- Improved desktop background positioning and home-page text contrast.
+- Fixed sticky header overlap on the first product row.
