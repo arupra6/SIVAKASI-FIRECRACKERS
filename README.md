@@ -1,23 +1,24 @@
-# RAAMDEV TRADERS Multipage Website
+# RAAMDEV TRADERS Website
 
-This is a GitHub Pages-ready static website.
+GitHub Pages-ready multi-page website.
 
-## Files to upload
-- index.html
-- verify.html
-- products.html
-- how-it-works.html
-- safety.html
-- contact.html
-- style.css
-- products.js
+## Files
+- `index.html` - Home page
+- `products.html` - Price List and estimate cart
+- `verify.html` - verification and scam warning
+- `how-it-works.html` - enquiry process
+- `safety.html` - firecracker safety guidelines
+- `contact.html` - contact page
+- `style.css` - website styling and responsive backgrounds
+- `products.js` - product list and estimate cart logic
+- `assets/` - logo and background images
 
-## Update placeholders before launch
+## Update placeholders before public launch
 Search and replace:
-- +91 99999 99999
-- 919999999999
-- yourbusiness@email.com
-- Sattur Main Road, Paraipatti, Sivakasi. Replace with full final address.
+- `+91 99999 99999`
+- `919999999999`
+- `yourbusiness@email.com`
+- address placeholder text
 
-## Product list
-The product list is inside products.js. The data was extracted from RAAMDHEV TRADERS PRICE LIST 2025 PDF.
+## Upload to GitHub
+Upload all files and the `assets` folder into the root of your `sivakasi-firecrackers` repository, then commit changes.

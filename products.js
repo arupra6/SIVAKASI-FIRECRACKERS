@@ -1403,45 +1403,148 @@ const products = [
   }
 ];
 
-
 const cart = {};
-function formatCurrency(value){return '₹' + Number(value).toLocaleString('en-IN', {minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2});}
-function renderProducts(){
-  const searchValue=document.getElementById('searchInput').value.toLowerCase();
-  const categoryValue=document.getElementById('categoryFilter').value;
-  const productBody=document.getElementById('productBody');
-  const filtered=products.filter(product=>product.name.toLowerCase().includes(searchValue)&&(categoryValue==='all'||product.category===categoryValue));
-  productBody.innerHTML=filtered.map(product=>{
-    const qty=cart[product.id]||0; const total=qty*product.price;
-    return `<tr>
-      <td>${product.id}</td>
-      <td><div class="product-name">${product.name}</div></td>
-      <td>${product.unit}</td>
-      <td><span class="tag">${product.category}</span></td>
-      <td><div class="price-old">${formatCurrency(product.mrp)}</div></td>
-      <td><div class="price-new">${formatCurrency(product.price)}</div></td>
-      <td><div class="qty-control"><button onclick="changeQty(${product.id},-1)" aria-label="Decrease quantity">−</button><span>${qty}</span><button onclick="changeQty(${product.id},1)" aria-label="Increase quantity">+</button></div></td>
-      <td><strong>${formatCurrency(total)}</strong></td>
+const categoryOrder = [...new Set(products.map(product => product.category))];
+
+function categorySlug(category) {
+  return category.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function formatCurrency(value) {
+  return '₹' + Number(value).toLocaleString('en-IN', { minimumFractionDigits: value % 1 ? 2 : 0, maximumFractionDigits: 2 });
+}
+
+function renderProducts() {
+  const productBody = document.getElementById('productBody');
+  const searchInput = document.getElementById('searchInput');
+  const searchValue = (searchInput?.value || '').toLowerCase().trim();
+  const selectedCategory = new URLSearchParams(window.location.search).get('category');
+
+  let html = '';
+  categoryOrder.forEach(category => {
+    const categoryProducts = products.filter(product => product.category === category && (
+      !searchValue ||
+      product.name.toLowerCase().includes(searchValue) ||
+      product.category.toLowerCase().includes(searchValue) ||
+      String(product.id).includes(searchValue)
+    ));
+
+    if (categoryProducts.length === 0) return;
+
+    const isSelected = selectedCategory === category;
+    html += `<tr class="category-row ${isSelected ? 'selected-category' : ''}" id="category-${categorySlug(category)}">
+      <td colspan="7">${category}</td>
     </tr>`;
-  }).join('');
+
+    html += categoryProducts.map(product => {
+      const qty = cart[product.id] || 0;
+      const total = qty * product.price;
+      return `<tr>
+        <td>${product.id}</td>
+        <td><div class="product-name">${product.name}</div></td>
+        <td>${product.unit}</td>
+        <td><div class="price-old">${formatCurrency(product.mrp)}</div></td>
+        <td><div class="price-new">${formatCurrency(product.price)}</div></td>
+        <td>
+          <div class="qty-control">
+            <button onclick="changeQty(${product.id}, -1)" aria-label="Decrease quantity">−</button>
+            <input class="qty-input" type="number" min="0" step="1" value="${qty}" onchange="setQty(${product.id}, this.value)" oninput="setQty(${product.id}, this.value)" aria-label="Quantity for ${product.name}">
+            <button onclick="changeQty(${product.id}, 1)" aria-label="Increase quantity">+</button>
+          </div>
+        </td>
+        <td><strong>${formatCurrency(total)}</strong></td>
+      </tr>`;
+    }).join('');
+  });
+
+  productBody.innerHTML = html || '<tr><td colspan="7" class="empty-cell">No products found.</td></tr>';
+  updateCartSummary();
 }
-function changeQty(productId,change){const current=cart[productId]||0;const next=Math.max(0,current+change);if(next===0){delete cart[productId]}else{cart[productId]=next}renderProducts();updateCartSummary();}
-function getCartItems(){return Object.entries(cart).map(([id,qty])=>{const product=products.find(item=>item.id===Number(id));return {...product,qty,total:product.price*qty};});}
-function updateCartSummary(){
-  const selectedItems=document.getElementById('selectedItems'); const itemCount=document.getElementById('itemCount'); const cartTotal=document.getElementById('cartTotal'); const grandTotal=document.getElementById('grandTotal');
-  const items=getCartItems(); const totalQty=items.reduce((sum,item)=>sum+Number(item.qty),0); const totalAmount=items.reduce((sum,item)=>sum+item.total,0);
-  if(items.length===0){selectedItems.className='empty-state';selectedItems.innerHTML='No products selected yet.';}else{selectedItems.className='';selectedItems.innerHTML=items.map(item=>`<div class="summary-line"><span>${item.id}. ${item.name} × ${item.qty}</span><strong>${formatCurrency(item.total)}</strong></div>`).join('');}
-  itemCount.textContent=totalQty;cartTotal.textContent=formatCurrency(totalAmount);grandTotal.textContent=formatCurrency(totalAmount);
+
+function changeQty(productId, change) {
+  const current = cart[productId] || 0;
+  const next = Math.max(0, current + change);
+  if (next === 0) { delete cart[productId]; } else { cart[productId] = next; }
+  renderProducts();
 }
-function sendWhatsAppEnquiry(){
-  const items=getCartItems(); if(items.length===0){alert('Please select at least one product before sending enquiry.');return;}
-  const name=document.getElementById('customerName').value.trim(); const mobile=document.getElementById('customerMobile').value.trim(); const city=document.getElementById('customerCity').value.trim(); const msg=document.getElementById('customerMessage').value.trim();
-  if(!name||!mobile||!city){alert('Please enter your name, mobile number and city/area.');return;}
-  const totalAmount=items.reduce((sum,item)=>sum+item.total,0);
-  const productLines=items.map(item=>`- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Total: ${formatCurrency(item.total)}`).join('%0A');
-  const message=`RAAMDEV TRADERS Retail Enquiry%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg||'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps.`;
-  window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`,'_blank');
+
+function setQty(productId, rawValue) {
+  let value = parseInt(rawValue, 10);
+  if (Number.isNaN(value) || value < 0) value = 0;
+  if (value === 0) { delete cart[productId]; } else { cart[productId] = value; }
+  updateCartSummary();
+  updateVisibleRowTotals();
 }
-document.getElementById('searchInput').addEventListener('input',renderProducts);
-document.getElementById('categoryFilter').addEventListener('change',renderProducts);
-renderProducts();updateCartSummary();
+
+function updateVisibleRowTotals() {
+  document.querySelectorAll('.qty-input').forEach(input => {
+    const match = input.getAttribute('onchange')?.match(/setQty\((\d+)/);
+    if (!match) return;
+    const id = Number(match[1]);
+    const product = products.find(item => item.id === id);
+    const row = input.closest('tr');
+    if (!product || !row) return;
+    input.value = cart[id] || 0;
+    row.querySelector('td:last-child strong').textContent = formatCurrency((cart[id] || 0) * product.price);
+  });
+}
+
+function getCartItems() {
+  return Object.entries(cart).map(([id, qty]) => {
+    const product = products.find(item => item.id === Number(id));
+    return { ...product, qty: Number(qty), total: product.price * Number(qty) };
+  });
+}
+
+function updateCartSummary() {
+  const selectedItems = document.getElementById('selectedItems');
+  const itemCount = document.getElementById('itemCount');
+  const cartTotal = document.getElementById('cartTotal');
+  const grandTotal = document.getElementById('grandTotal');
+  if (!selectedItems || !itemCount || !cartTotal || !grandTotal) return;
+
+  const items = getCartItems();
+  const totalQty = items.reduce((sum, item) => sum + Number(item.qty), 0);
+  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+
+  if (items.length === 0) {
+    selectedItems.className = 'empty-state';
+    selectedItems.innerHTML = 'No products selected yet.';
+  } else {
+    selectedItems.className = '';
+    selectedItems.innerHTML = items.map(item => `<div class="summary-line"><span>${item.id}. ${item.name} × ${item.qty}</span><strong>${formatCurrency(item.total)}</strong></div>`).join('');
+  }
+
+  itemCount.textContent = totalQty;
+  cartTotal.textContent = formatCurrency(totalAmount);
+  grandTotal.textContent = formatCurrency(totalAmount);
+}
+
+function sendWhatsAppEnquiry() {
+  const items = getCartItems();
+  if (items.length === 0) { alert('Please select at least one product before sending enquiry.'); return; }
+
+  const name = document.getElementById('customerName').value.trim();
+  const mobile = document.getElementById('customerMobile').value.trim();
+  const city = document.getElementById('customerCity').value.trim();
+  const msg = document.getElementById('customerMessage').value.trim();
+  if (!name || !mobile || !city) { alert('Please enter your name, mobile number and city/area.'); return; }
+
+  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Total: ${formatCurrency(item.total)}`).join('%0A');
+  const message = `RAAMDEV TRADERS Price List Enquiry%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps.`;
+  window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`, '_blank');
+}
+
+function scrollToSelectedCategory() {
+  const selectedCategory = new URLSearchParams(window.location.search).get('category');
+  if (!selectedCategory) return;
+  const target = document.getElementById(`category-${categorySlug(selectedCategory)}`);
+  if (target) {
+    setTimeout(() => target.scrollIntoView({ behavior: 'smooth', block: 'start' }), 350);
+  }
+}
+
+document.getElementById('searchInput')?.addEventListener('input', renderProducts);
+renderProducts();
+scrollToSelectedCategory();

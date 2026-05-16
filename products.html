@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="RAAMDEV TRADERS 2025 retail firecrackers price list with estimate cart and WhatsApp enquiry." />
-  <title>Retail Price List | RAAMDEV TRADERS</title>
+  <meta name="description" content="RAAMDEV TRADERS firecrackers price list with estimate cart and WhatsApp enquiry." />
+  <title>Price List | RAAMDEV TRADERS</title>
   <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-
+<body class="products-page">
 <header>
   <div class="top-alert">Customer Safety First: Verify RAAMDEV TRADERS official contact before making any payment.</div>
   <nav class="nav">
     <a class="brand" href="index.html" aria-label="RAAMDEV TRADERS Home">
-      <div class="brand-mark">RT</div>
-      <div>
+      <img class="brand-logo" src="assets/logo.png" alt="Raamdev Crackers logo" />
+      <div class="brand-text">
         <h1>RAAMDEV TRADERS</h1>
         <span>The Original Sivakasi Crackers</span>
       </div>
@@ -31,41 +30,32 @@
     </div>
   </nav>
 </header>
-
 <main>
-  <section class="page-hero"><div class="container"><h2>Retail Price List 2025</h2><p>Select products, prepare your estimate and send enquiry to official WhatsApp.</p></div></section>
+  <section class="page-hero">
+    <div class="container">
+      <div class="hero-badge">RAAMDEV TRADERS</div>
+      <h2>Price List</h2>
+      <p>All products are listed in one table with category headers. Select quantities, prepare your estimate and send enquiry to official WhatsApp.</p>
+    </div>
+  </section>
   <section class="section section-soft">
     <div class="container products-layout">
       <div>
-        <div class="product-tools">
-          <input type="search" id="searchInput" placeholder="Search product name..." aria-label="Search product name">
-          <select id="categoryFilter" aria-label="Filter by category">
-            <option value="all">All Categories</option>
-          <option value="One Sound Crackers">One Sound Crackers</option>
-          <option value="Flowerpots (10Pcs)">Flowerpots (10Pcs)</option>
-          <option value="Ground Chakker (10Pcs)">Ground Chakker (10Pcs)</option>
-          <option value="Sparklers">Sparklers</option>
-          <option value="Pencil Sparkling Varieties">Pencil Sparkling Varieties</option>
-          <option value="Sky Rockets">Sky Rockets</option>
-          <option value="Bijili Crackers">Bijili Crackers</option>
-          <option value="Bomb Crackers">Bomb Crackers</option>
-          <option value="Paper Bomb">Paper Bomb</option>
-          <option value="Wala Garland">Wala Garland</option>
-          <option value="Sky Night Celebration">Sky Night Celebration</option>
-          <option value="Night Fancy Celebration">Night Fancy Celebration</option>
-          <option value="Fancy Flower Balls">Fancy Flower Balls</option>
-          <option value="Colour Matches">Colour Matches</option>
-          <option value="Children Gun Items">Children Gun Items</option>
-          <option value="New Fancy Arrivals">New Fancy Arrivals</option>
-          <option value="New Arrivals 2025">New Arrivals 2025</option>
-          <option value="Gift Box - Net Rates">Gift Box - Net Rates</option>
-          <option value="Combo Pack - Net Rates">Combo Pack - Net Rates</option>
-          </select>
+        <div class="product-tools product-tools-single">
+          <input type="search" id="searchInput" placeholder="Search product name or category..." aria-label="Search product name or category">
         </div>
         <div class="product-table-wrap">
           <table>
             <thead>
-              <tr><th>S.No</th><th>Product</th><th>Unit</th><th>Category</th><th>MRP</th><th>Price</th><th>Qty</th><th>Total</th></tr>
+              <tr>
+                <th>S.No</th>
+                <th>Crackers Name</th>
+                <th>Unit</th>
+                <th>MRP Amount</th>
+                <th>After Discount</th>
+                <th>Qty</th>
+                <th>Total</th>
+              </tr>
             </thead>
             <tbody id="productBody"></tbody>
           </table>
@@ -78,18 +68,16 @@
         <div class="summary-line"><span>Estimate Total</span><strong id="cartTotal">₹0</strong></div>
         <div class="grand-total" id="grandTotal">₹0</div>
         <div class="form-group"><label for="customerName">Customer Name</label><input type="text" id="customerName" placeholder="Enter your name"></div>
-        <div class="form-group"><label for="customerMobile">Mobile Number</label><input type="tel" id="customerMobile" placeholder="Enter mobile number"></div>
-        <div class="form-group"><label for="customerCity">City / Area</label><input type="text" id="customerCity" placeholder="Enter city / area"></div>
+        <div class="form-group"><label for="customerMobile">Mobile Number</label><input type="tel" id="customerMobile" placeholder="Enter your mobile number"></div>
+        <div class="form-group"><label for="customerCity">City / Area</label><input type="text" id="customerCity" placeholder="Enter city or area"></div>
         <div class="form-group"><label for="customerMessage">Message</label><textarea id="customerMessage" rows="3" placeholder="Any special request"></textarea></div>
-        <p class="small-note">This is an estimate only. Final confirmation is subject to availability and official offline verification.</p>
+        <p class="small-note">This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.</p>
         <button class="btn btn-green full" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
         <button class="btn btn-dark full" onclick="window.print()">Print / Save Estimate</button>
       </aside>
     </div>
   </section>
 </main>
-<script src="products.js"></script>
-
 <footer>
   <div class="container footer-grid">
     <div>
@@ -98,11 +86,11 @@
     </div>
     <div>
       <h4>Official Contact</h4>
-      <p>Call: +91 99999 99999<br>WhatsApp: +91 99999 99999<br>Email: yourbusiness@email.com</p>
+      <p>Call: +91 99999 99999<br>WhatsApp: +91 99999 99999<br>Email: yourbusiness@email.com<br>Business Hours: 24 Hours</p>
     </div>
     <div>
       <h4>Legal Notice</h4>
-      <p>This website is for product information, retail price-list viewing and enquiry submission only. Final confirmation is handled offline through authorised communication.</p>
+      <p>This website is for product information, price-list viewing and enquiry submission only. Final confirmation is handled offline through authorised communication.</p>
     </div>
   </div>
 </footer>
@@ -111,7 +99,7 @@
   <a href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
   <a href="products.html">Price List</a>
 </div>
-<script>
-function toggleMenu(){document.getElementById('navLinks').classList.toggle('open')}
-</script>
-</body></html>
+<script>function toggleMenu(){document.getElementById('navLinks').classList.toggle('open')}</script>
+<script src="products.js"></script>
+</body>
+</html>
