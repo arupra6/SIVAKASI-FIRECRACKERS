@@ -1619,13 +1619,15 @@ function sendWhatsAppEnquiry() {
   const name = document.getElementById('customerName').value.trim();
   const mobile = document.getElementById('customerMobile').value.trim();
   const city = document.getElementById('customerCity').value.trim();
+  const district = document.getElementById('customerDistrict').value.trim();
+  const pincode = document.getElementById('customerPincode').value.trim();
   const msg = document.getElementById('customerMessage').value.trim();
-  if (!name || !mobile || !city) { alert('Please enter your name, mobile number and city/area.'); return; }
+  if (!name || !mobile || !city || !district || !pincode) { alert('Please enter your name, mobile number, city/area, district and PIN code.'); return; }
 
   const enquiryNo = generateEnquiryNumber();
   const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
   const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Total: ${formatCurrency(item.total)}`).join('%0A');
-  const message = `RAAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
+  const message = `RAAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(name)}%0AMobile: ${encodeURIComponent(mobile)}%0ACity/Area: ${encodeURIComponent(city)}%0ADistrict: ${encodeURIComponent(district)}%0APIN Code: ${encodeURIComponent(pincode)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(msg || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
   window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`, '_blank');
 }
 

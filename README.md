@@ -24,3 +24,6 @@ Static HTML/CSS/JavaScript website for RAAMDEV TRADERS firecrackers catalogue, p
 - Google Maps link
 - Real shop photos
 - Product photos
+
+
+Comments 25-27 update: Increased product tile scroll height, added District and PIN Code fields to the final customer details form, and included these location details in WhatsApp enquiry messages.
