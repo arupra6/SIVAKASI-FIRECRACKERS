@@ -4,13 +4,21 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="RAAMDEV TRADERS firecrackers price list with estimate cart and WhatsApp enquiry." />
+  <meta name="og:title" content="Price List | RAAMDEV TRADERS" />
+  <meta name="og:description" content="Browse and estimate firecrackers from RAAMDEV TRADERS with live pricing and WhatsApp ordering." />
+  <meta name="og:type" content="website" />
+  <meta name="theme-color" content="#128c7e" />
   <title>Price List | RAAMDEV TRADERS</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="products-page">
-<header>
-  <div class="top-alert">Customer Safety First: Verify RAAMDEV TRADERS official contact before making any payment.</div>
-  <nav class="nav">
+
+<!-- Skip to main content link for accessibility -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header role="banner">
+  <div class="top-alert" role="status">Customer Safety First: Verify RAAMDEV TRADERS official contact before making any payment.</div>
+  <nav class="nav" role="navigation" aria-label="Main navigation">
     <a class="brand" href="index.html" aria-label="RAAMDEV TRADERS Home">
       <img class="brand-logo" src="assets/logo.png" alt="Raamdev Crackers logo" />
       <div class="brand-text">
@@ -18,19 +26,20 @@
         <span>The Original Sivakasi Crackers</span>
       </div>
     </a>
-    <button class="menu-toggle" onclick="toggleMenu()" aria-label="Open menu">☰</button>
+    <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="navLinks">☰</button>
     <div class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
       <a href="verify.html">Verify Us</a>
-      <a href="products.html">Price List</a>
+      <a href="products.html" aria-current="page">Price List</a>
       <a href="how-it-works.html">How It Works</a>
       <a href="safety.html">Safety</a>
       <a href="contact.html">Contact</a>
-      <a class="btn btn-green btn-small" href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
+      <a class="btn btn-green btn-small" href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer">WhatsApp</a>
     </div>
   </nav>
 </header>
-<main>
+
+<main id="main-content">
   <section class="page-hero">
     <div class="container">
       <div class="hero-badge">RAAMDEV TRADERS</div>
@@ -38,49 +47,150 @@
       <p>All products are listed in one table with category headers. Select quantities, prepare your estimate and send enquiry to official WhatsApp.</p>
     </div>
   </section>
+
   <section class="section section-soft">
     <div class="container products-layout">
-      <div>
+      <!-- Products Table Section -->
+      <div class="products-section">
         <div class="product-tools product-tools-single">
-          <input type="search" id="searchInput" placeholder="Search product name or category..." aria-label="Search product name or category">
+          <input 
+            type="search" 
+            id="searchInput" 
+            placeholder="Search product name or category..." 
+            aria-label="Search product name or category"
+          >
         </div>
-        <div class="scroll-note">Scroll inside the price-list box. Your selected quantities will be saved while you visit other pages.</div>
-        <div class="product-table-wrap">
-          <table>
+        <div class="scroll-note" role="status">
+          Scroll inside the price-list box. Your selected quantities will be saved while you visit other pages.
+        </div>
+        <div class="product-table-wrap" role="region" aria-label="Products price list">
+          <table role="table" aria-label="Firecrackers price list with quantity selector">
             <thead>
               <tr>
-                <th>S.No</th>
-                <th>Crackers Name</th>
-                <th>Unit</th>
-                <th>MRP Amount</th>
-                <th>After Discount</th>
-                <th>Qty</th>
-                <th>Total</th>
+                <th scope="col">S.No</th>
+                <th scope="col">Crackers Name</th>
+                <th scope="col">Unit</th>
+                <th scope="col">MRP Amount</th>
+                <th scope="col">After Discount</th>
+                <th scope="col">Qty</th>
+                <th scope="col">Total</th>
               </tr>
             </thead>
-            <tbody id="productBody"></tbody>
+            <tbody id="productBody" role="rowgroup"></tbody>
           </table>
         </div>
       </div>
-      <aside class="estimate-card">
+
+      <!-- Estimate Cart Sidebar -->
+      <aside class="estimate-card" role="complementary" aria-label="Estimate cart">
         <h3>Estimate Cart</h3>
-        <div id="selectedItems" class="empty-state">No products selected yet.</div>
-        <div class="summary-line"><span>Items</span><strong id="itemCount">0</strong></div>
-        <div class="summary-line"><span>Estimate Total</span><strong id="cartTotal">₹0</strong></div>
-        <div class="grand-total" id="grandTotal">₹0</div>
-        <div class="form-group"><label for="customerName">Customer Name</label><input type="text" id="customerName" placeholder="Enter your name"></div>
-        <div class="form-group"><label for="customerMobile">Mobile Number</label><input type="tel" id="customerMobile" placeholder="Enter your mobile number"></div>
-        <div class="form-group"><label for="customerCity">City / Area</label><input type="text" id="customerCity" placeholder="Enter city or area"></div>
-        <div class="form-group"><label for="customerMessage">Message</label><textarea id="customerMessage" rows="3" placeholder="Any special request"></textarea></div>
-        <p class="small-note">This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.</p>
-        <button class="btn btn-green full" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
-        <button class="btn btn-dark full" onclick="window.print()">Print / Save Estimate</button>
-        <button class="btn btn-reset full" onclick="resetEstimate()">Clear Estimate / Reset Selection</button>
+        
+        <div 
+          id="selectedItems" 
+          class="empty-state" 
+          role="status" 
+          aria-live="polite" 
+          aria-atomic="true"
+        >
+          No products selected yet.
+        </div>
+        
+        <div class="summary-line">
+          <span>Items</span>
+          <strong id="itemCount" aria-label="Total items selected">0</strong>
+        </div>
+        <div class="summary-line">
+          <span>Estimate Total</span>
+          <strong id="cartTotal" aria-label="Total amount">₹0</strong>
+        </div>
+        <div class="grand-total" id="grandTotal" aria-live="polite" aria-label="Grand total">₹0</div>
+
+        <!-- Customer Information Form -->
+        <form class="customer-info-form" aria-label="Customer enquiry form">
+          <div class="form-group">
+            <label for="customerName">Customer Name <span aria-label="required">*</span></label>
+            <input 
+              type="text" 
+              id="customerName" 
+              placeholder="Enter your name"
+              required
+              aria-required="true"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="customerMobile">Mobile Number <span aria-label="required">*</span></label>
+            <input 
+              type="tel" 
+              id="customerMobile" 
+              placeholder="Enter your mobile number"
+              required
+              aria-required="true"
+              pattern="[0-9\s\-\+]+"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="customerCity">City / Area <span aria-label="required">*</span></label>
+            <input 
+              type="text" 
+              id="customerCity" 
+              placeholder="Enter city or area"
+              required
+              aria-required="true"
+            >
+          </div>
+          
+          <div class="form-group">
+            <label for="customerMessage">Message</label>
+            <textarea 
+              id="customerMessage" 
+              rows="3" 
+              placeholder="Any special request"
+              aria-label="Special message or request (optional)"
+            ></textarea>
+          </div>
+
+          <p class="small-note">
+            <strong>Note:</strong> This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.
+          </p>
+
+          <!-- Action Buttons -->
+          <div class="button-group">
+            <button 
+              type="button" 
+              class="btn btn-green full" 
+              onclick="sendWhatsAppEnquiry()"
+              aria-label="Send enquiry to WhatsApp"
+            >
+              Send Enquiry to WhatsApp
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn btn-dark full" 
+              onclick="window.print()"
+              aria-label="Print or save estimate as PDF"
+            >
+              Print / Save Estimate
+            </button>
+            
+            <button 
+              type="button" 
+              class="btn btn-reset full" 
+              onclick="resetEstimate()"
+              aria-label="Clear all selected items and start over"
+            >
+              Clear Estimate / Reset Selection
+            </button>
+          </div>
+        </form>
       </aside>
     </div>
   </section>
 </main>
-<footer>
+
+<footer role="contentinfo">
   <div class="container footer-grid">
     <div>
       <h3>RAAMDEV TRADERS</h3>
@@ -88,7 +198,12 @@
     </div>
     <div>
       <h4>Official Contact</h4>
-      <p>Call: +91 99999 99999<br>WhatsApp: +91 99999 99999<br>Email: yourbusiness@email.com<br>Business Hours: 24 Hours</p>
+      <p>
+        <strong>Call:</strong> <a href="tel:+919999999999">+91 99999 99999</a><br>
+        <strong>WhatsApp:</strong> <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer">+91 99999 99999</a><br>
+        <strong>Email:</strong> <a href="mailto:yourbusiness@email.com">yourbusiness@email.com</a><br>
+        <strong>Business Hours:</strong> 24 Hours
+      </p>
     </div>
     <div>
       <h4>Legal Notice</h4>
@@ -96,12 +211,33 @@
     </div>
   </div>
 </footer>
-<div class="mobile-bar">
-  <a href="tel:+919999999999">Call</a>
-  <a href="https://wa.me/919999999999" target="_blank" rel="noopener">WhatsApp</a>
-  <a href="products.html">Price List</a>
+
+<!-- Mobile Quick Actions Bar -->
+<div class="mobile-bar" role="navigation" aria-label="Mobile quick actions">
+  <a href="tel:+919999999999" title="Call RAAMDEV TRADERS">📞 Call</a>
+  <a href="https://wa.me/919999999999" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">💬 WhatsApp</a>
+  <a href="#main-content" title="Scroll to product list">📋 Products</a>
 </div>
-<script>function toggleMenu(){document.getElementById('navLinks').classList.toggle('open')}</script>
-<script src="products.js"></script>
+
+<!-- Scripts -->
+<script>
+  // Toggle menu accessibility
+  function toggleMenu() {
+    const navLinks = document.getElementById('navLinks');
+    const toggle = document.querySelector('.menu-toggle');
+    const isOpen = navLinks.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', isOpen);
+  }
+
+  // Close menu when a link is clicked (for better UX)
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      document.getElementById('navLinks').classList.remove('open');
+      document.querySelector('.menu-toggle').setAttribute('aria-expanded', 'false');
+    });
+  });
+</script>
+<script defer src="products.js"></script>
+
 </body>
 </html>
