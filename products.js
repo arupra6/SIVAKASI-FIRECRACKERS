@@ -1,4 +1,4 @@
-const officialWhatsappNumber = '919999999999';
+const officialWhatsappNumber = '919042669936';
 
 const MINIMUM_ENQUIRY_VALUE = 3000;
 
@@ -1464,7 +1464,7 @@ const products = [
   }
 ];
 
-const CART_STORAGE_KEY = 'raamdevEstimateCart';
+const CART_STORAGE_KEY = 'ramdevEstimateCart';
 const savedCart = JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '{}');
 const cart = savedCart && typeof savedCart === 'object' ? savedCart : {};
 const categoryOrder = [...new Set(products.map(product => product.category))];
@@ -1805,15 +1805,15 @@ function printSelectedEstimate() {
       <td>${formatCurrency(item.total)}</td>
     </tr>`).join('');
 
-  const printHtml = `<!DOCTYPE html><html><head><title>RAAMDEV TRADERS Estimate</title>
+  const printHtml = `<!DOCTYPE html><html><head><title>RAMDEV TRADERS Estimate</title>
     <style>
       body{font-family:Arial,Helvetica,sans-serif;margin:24px;color:#101827}.estimate-head{display:flex;justify-content:space-between;gap:20px;border-bottom:3px solid #8b1111;padding-bottom:12px;margin-bottom:18px}.estimate-head h1{margin:0;color:#8b1111;font-size:26px}.estimate-head p{margin:4px 0}.badge{display:inline-block;background:#fff2b8;color:#5f0707;padding:6px 10px;border-radius:999px;font-weight:800}.details{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;margin:16px 0;padding:14px;background:#fff7df;border:1px solid #ead7a5;border-radius:12px}.details div{font-size:14px}table{width:100%;border-collapse:collapse;margin-top:14px}th{background:#5f0707;color:#f7c948;text-align:left}th,td{border:1px solid #ead7a5;padding:9px;font-size:13px}.total{text-align:right;font-size:22px;color:#8b1111;font-weight:900;margin-top:16px}.note{margin-top:18px;padding:12px;border:1px dashed #f97316;background:#fff7df;font-size:13px}.footer{margin-top:22px;text-align:center;color:#6b7280;font-size:12px}@media print{body{margin:14mm}.no-print{display:none}}
     </style></head><body>
-      <div class="estimate-head"><div><h1>RAAMDEV TRADERS</h1><p>The Original Sivakasi Crackers</p><span class="badge">Customer Estimate Only</span></div><div><p><strong>Enquiry No:</strong> ${enquiryNo}</p><p><strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}</p></div></div>
+      <div class="estimate-head"><div><h1>RAMDEV TRADERS</h1><p>The Original Sivakasi Crackers</p><span class="badge">Customer Estimate Only</span></div><div><p><strong>Enquiry No:</strong> ${enquiryNo}</p><p><strong>Date:</strong> ${new Date().toLocaleDateString('en-IN')}</p></div></div>
       <div class="details"><div><strong>Name:</strong> ${escapeHtml(details.name)}</div><div><strong>Mobile:</strong> ${escapeHtml(details.mobile)}</div><div><strong>City/Area:</strong> ${escapeHtml(details.city)}</div><div><strong>District:</strong> ${escapeHtml(details.district)}</div><div><strong>Postal Area:</strong> ${escapeHtml(details.postalArea)}</div><div><strong>PIN Code:</strong> ${escapeHtml(details.pincode)}</div></div>
       <table><thead><tr><th>S.No</th><th>Product</th><th>Unit</th><th>Qty</th><th>Rate</th><th>Total</th></tr></thead><tbody>${rows}</tbody></table>
       <div class="total">Grand Total: ${formatCurrency(totalAmount)}</div>
-      <div class="note"><strong>Important:</strong> This is an estimate only and not an online purchase confirmation. Final availability, permitted products, payment method and pickup/delivery details will be confirmed only through official RAAMDEV TRADERS contact. Minimum enquiry value: ₹3,000.</div>
+      <div class="note"><strong>Important:</strong> This is an estimate only and not an online purchase confirmation. Final availability, permitted products, payment method and pickup/delivery details will be confirmed only through official RAMDEV TRADERS contact. Minimum enquiry value: ₹3,000.</div>
       <div class="footer">அனைவருக்கும் இனிய தீபாவளி நல்வாழ்த்துகள்</div>
       <script>window.onload=function(){window.print();};<\/script>
     </body></html>`;
@@ -1835,7 +1835,7 @@ function sendWhatsAppEnquiry() {
   const enquiryNo = generateEnquiryNumber();
   const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
   const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Rate: ${formatCurrency(item.price)} | Total: ${formatCurrency(item.total)}`).join('%0A');
-  const message = `RAAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(details.name)}%0AMobile: ${encodeURIComponent(details.mobile)}%0ACity/Area: ${encodeURIComponent(details.city)}%0ADistrict: ${encodeURIComponent(details.district)}%0APostal Area: ${encodeURIComponent(details.postalArea)}%0APIN Code: ${encodeURIComponent(details.pincode)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(details.message || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
+  const message = `RAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(details.name)}%0AMobile: ${encodeURIComponent(details.mobile)}%0ACity/Area: ${encodeURIComponent(details.city)}%0ADistrict: ${encodeURIComponent(details.district)}%0APostal Area: ${encodeURIComponent(details.postalArea)}%0APIN Code: ${encodeURIComponent(details.pincode)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(details.message || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
   window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`, '_blank');
 }
 

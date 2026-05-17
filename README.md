@@ -1,6 +1,6 @@
-# RAAMDEV TRADERS Website
+# RAMDEV TRADERS Website
 
-Static HTML/CSS/JavaScript website for RAAMDEV TRADERS firecrackers catalogue, price list, estimate cart and enquiry workflow.
+Static HTML/CSS/JavaScript website for RAMDEV TRADERS firecrackers catalogue, price list, estimate cart and enquiry workflow.
 
 ## Latest update
 
