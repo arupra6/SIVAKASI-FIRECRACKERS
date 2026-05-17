@@ -574,3 +574,8 @@ body.modal-open{overflow:hidden}
 .map-frame{width:100%;min-height:310px;border-radius:22px;overflow:hidden;border:2px solid var(--gold);box-shadow:0 10px 28px rgba(0,0,0,.12);background:#fff8dc}
 .map-frame iframe{display:block;width:100%;height:310px;border:0}
 @media(max-width:620px){.map-frame,.map-frame iframe{min-height:260px;height:260px}.mobile-bar a{font-size:11px}}
+
+/* ===== RAMDEV TRADERS update: comments 40 to 42 document downloads ===== */
+.btn-gold{background:linear-gradient(135deg,var(--gold),#fff29a);color:var(--deep-red);border:1px solid #f4bd22}
+.customer-actions .btn{white-space:normal;text-align:center;line-height:1.2}
+@media(max-width:700px){.customer-actions .btn{flex:1 1 100%;font-size:13px;padding:12px 14px}}

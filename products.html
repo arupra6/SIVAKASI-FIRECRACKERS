@@ -97,10 +97,14 @@
         </div>
         <p class="small-note emphasized-note">This is not an online purchase confirmation. Final confirmation is subject to availability, permitted products and offline verification.</p>
         <div class="customer-actions">
-          <button class="btn btn-green" id="sendEnquiryButton" onclick="sendWhatsAppEnquiry()">Send Enquiry to WhatsApp</button>
-          <button class="btn btn-dark" id="printEstimateButton" onclick="printSelectedEstimate()">Print / Save Estimate</button>
+          <button class="btn btn-green requires-minimum" id="sendEnquiryButton" onclick="sendWhatsAppEnquiry()">Send WhatsApp + Download Files</button>
+          <button class="btn btn-dark requires-minimum" id="estimatePdfButton" onclick="downloadEstimatePdfAction()">Customer Estimate PDF</button>
+          <button class="btn btn-dark requires-minimum" id="estimateExcelButton" onclick="downloadEstimateExcelAction()">Customer Estimate Excel</button>
+          <button class="btn btn-gold requires-minimum" id="packingPdfButton" onclick="downloadPackingPdfAction()">Packing List PDF</button>
+          <button class="btn btn-gold requires-minimum" id="packingExcelButton" onclick="downloadPackingExcelAction()">Packing List Excel</button>
           <button class="btn btn-reset" onclick="resetEstimate()">Clear Estimate / Reset Selection</button>
         </div>
+        <p class="small-note emphasized-note">When you send WhatsApp enquiry, the website will generate customer estimate files and shop packing-list files in this browser. WhatsApp web link cannot auto-attach files without backend.</p>
       </section>
     </div>
   </section>
@@ -136,6 +140,7 @@
   </div>
 </div>
 <script>function toggleMenu(){document.getElementById('navLinks').classList.toggle('open')}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="products.js"></script>
 </body>
 </html>

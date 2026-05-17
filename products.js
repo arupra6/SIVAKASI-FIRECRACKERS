@@ -1630,8 +1630,7 @@ function updateCartSummary() {
   const mobileCartText = document.getElementById('mobileCartText');
   const mobileCartBar = document.getElementById('mobileCartBar');
   const minimumStatus = document.getElementById('minimumStatus');
-  const sendButton = document.getElementById('sendEnquiryButton');
-  const printButton = document.getElementById('printEstimateButton');
+  const actionButtons = document.querySelectorAll('.requires-minimum');
   if (!selectedItems || !itemCount || !cartTotal || !grandTotal) return;
 
   const items = getCartItems();
@@ -1662,8 +1661,7 @@ function updateCartSummary() {
     }
   }
 
-  [sendButton, printButton].forEach(button => {
-    if (!button) return;
+  actionButtons.forEach(button => {
     button.disabled = !minimumMet;
     button.classList.toggle('btn-disabled', !minimumMet);
     button.title = minimumMet ? '' : 'Minimum enquiry value is ₹3,000';
@@ -1786,6 +1784,359 @@ function selectDistrictSuggestion(district) {
   if (suggestions) suggestions.classList.remove('open');
 }
 
+function makeSafeFilenamePart(value) {
+  return String(value || '').replace(/[^a-z0-9-_]+/gi, '_').replace(/^_+|_+$/g, '').slice(0, 60) || 'document';
+}
+
+function formatInrForDocs(value) {
+  const numberValue = Number(value || 0);
+  return 'INR ' + numberValue.toLocaleString('en-IN', {
+    minimumFractionDigits: numberValue % 1 ? 2 : 0,
+    maximumFractionDigits: 2
+  });
+}
+
+function getItemSaving(item) {
+  const mrp = Number(item.mrp || 0);
+  const price = Number(item.price || 0);
+  const qty = Number(item.qty || 0);
+  const saving = Math.max(0, (mrp - price) * qty);
+  return saving;
+}
+
+function getItemSavingLabel(item) {
+  const saving = getItemSaving(item);
+  return saving > 0 ? formatInrForDocs(saving) : 'Net Rate';
+}
+
+function prepareDocumentPayload(enquiryNo = generateEnquiryNumber(), skipAlerts = false) {
+  const items = getCartItems();
+  if (items.length === 0) {
+    if (!skipAlerts) alert('Please select at least one product.');
+    return null;
+  }
+  if (!validateMinimumValue()) return null;
+  const details = validateCustomerDetails();
+  if (!details) return null;
+  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  const totalMrpValue = items.reduce((sum, item) => sum + (Number(item.mrp || 0) * Number(item.qty || 0)), 0);
+  const totalSavings = items.reduce((sum, item) => sum + getItemSaving(item), 0);
+  return {
+    enquiryNo,
+    generatedAt: new Date(),
+    details,
+    items,
+    totalAmount,
+    totalMrpValue,
+    totalSavings
+  };
+}
+
+function downloadBlob(content, filename, mimeType) {
+  const blob = content instanceof Blob ? content : new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 1200);
+}
+
+function buildExcelHtml(payload, type) {
+  const isPacking = type === 'packing';
+  const title = isPacking ? 'Shop Packing List' : 'Customer Estimate';
+  const itemTableColSpan = isPacking ? 5 : 9;
+  const customerRows = `
+    <tr><td class="label">Enquiry No</td><td>${escapeHtml(payload.enquiryNo)}</td><td class="label">Date</td><td>${escapeHtml(payload.generatedAt.toLocaleString('en-IN'))}</td></tr>
+    <tr><td class="label">Customer Name</td><td>${escapeHtml(payload.details.name)}</td><td class="label">Mobile Number</td><td>${escapeHtml(payload.details.mobile)}</td></tr>
+    <tr><td class="label">City / Area</td><td>${escapeHtml(payload.details.city)}</td><td class="label">District</td><td>${escapeHtml(payload.details.district)}</td></tr>
+    <tr><td class="label">Postal Area</td><td>${escapeHtml(payload.details.postalArea)}</td><td class="label">PIN Code</td><td>${escapeHtml(payload.details.pincode)}</td></tr>
+    <tr><td class="label">Message</td><td colspan="3">${escapeHtml(payload.details.message || '-')}</td></tr>`;
+
+  const tableHead = isPacking
+    ? '<tr><th>S.No</th><th>Product Name</th><th>Category</th><th>Unit</th><th>Quantity</th></tr>'
+    : '<tr><th>S.No</th><th>Product Name</th><th>Category</th><th>Unit</th><th>MRP</th><th>Discount Price</th><th>Qty</th><th>Item Total</th><th>You Save</th></tr>';
+
+  const itemRows = payload.items.map((item, index) => isPacking
+    ? `<tr><td class="center">${index + 1}</td><td class="wrap product-col">${escapeHtml(item.name)}</td><td class="wrap category-col">${escapeHtml(item.category)}</td><td class="center">${escapeHtml(item.unit)}</td><td class="center qty-col">${item.qty}</td></tr>`
+    : `<tr><td class="center">${index + 1}</td><td class="wrap product-col">${escapeHtml(item.name)}</td><td class="wrap category-col">${escapeHtml(item.category)}</td><td class="center">${escapeHtml(item.unit)}</td><td class="money">${formatInrForDocs(item.mrp)}</td><td class="money">${formatInrForDocs(item.price)}</td><td class="center qty-col">${item.qty}</td><td class="money">${formatInrForDocs(item.total)}</td><td class="money save-col">${getItemSavingLabel(item)}</td></tr>`
+  ).join('');
+
+  const totalsBlock = isPacking ? '' : `
+    <table class="totals">
+      <tr><td class="label">Total MRP Value</td><td class="money">${formatInrForDocs(payload.totalMrpValue)}</td></tr>
+      <tr><td class="label">Grand Total After Discount</td><td class="money strong-total">${formatInrForDocs(payload.totalAmount)}</td></tr>
+      <tr><td class="label">Total Savings After Discount</td><td class="money strong-save">${formatInrForDocs(payload.totalSavings)}</td></tr>
+    </table>`;
+
+  const note = isPacking
+    ? 'Packing list for shop use only. Prices are intentionally hidden.'
+    : 'Customer estimate only. Final confirmation is subject to availability, permitted products and official offline confirmation. Minimum enquiry value: INR 3,000.';
+
+  return `<!DOCTYPE html><html><head><meta charset="UTF-8"><style>
+    body{font-family:Arial,Helvetica,sans-serif;color:#101827}
+    table{border-collapse:collapse;width:100%;table-layout:fixed;margin-bottom:14px}
+    td,th{border:1px solid #b8a67a;padding:8px;vertical-align:top;font-size:12px;line-height:1.35;white-space:normal;mso-number-format:"\\@"}
+    th{background:#5f0707;color:#f7c948;text-align:center;font-weight:bold}
+    .title{font-size:22px;font-weight:bold;color:#8b1111;background:#fff7df;text-align:center;border:2px solid #8b1111}
+    .subtitle{font-size:14px;font-weight:bold;color:#101827;background:#fff2b8;text-align:center}
+    .label{font-weight:bold;background:#fff7df;color:#5f0707;width:18%}
+    .center{text-align:center}.money{text-align:right;white-space:nowrap}.wrap{white-space:normal;word-wrap:break-word}
+    .product-col{width:31%}.category-col{width:20%}.qty-col{width:8%}.save-col{color:#0f5132;font-weight:bold}
+    .note{background:#fff7df;font-weight:bold;color:#5f0707}
+    .totals{width:45%;margin-left:auto}.totals td{font-size:13px}.strong-total{font-weight:bold;color:#8b1111}.strong-save{font-weight:bold;color:#0f5132}
+  </style></head><body>
+    <table>
+      <tr><td class="title" colspan="4">RAMDEV TRADERS - ${title}</td></tr>
+      <tr><td class="subtitle" colspan="4">The Original Sivakasi Crackers</td></tr>
+      ${customerRows}
+    </table>
+    <table>
+      <tr><td class="subtitle" colspan="${itemTableColSpan}">Selected Items Only</td></tr>
+      ${tableHead}
+      ${itemRows}
+      <tr><td class="note" colspan="${itemTableColSpan}">${escapeHtml(note)}</td></tr>
+    </table>
+    ${totalsBlock}
+  </body></html>`;
+}
+
+function downloadEstimateExcel(payload = prepareDocumentPayload()) {
+  if (!payload) return;
+  const filename = `${payload.enquiryNo}_customer_estimate.xls`;
+  downloadBlob(buildExcelHtml(payload, 'estimate'), filename, 'application/vnd.ms-excel;charset=utf-8');
+}
+
+function downloadPackingExcel(payload = prepareDocumentPayload()) {
+  if (!payload) return;
+  const filename = `${payload.enquiryNo}_packing_list.xls`;
+  downloadBlob(buildExcelHtml(payload, 'packing'), filename, 'application/vnd.ms-excel;charset=utf-8');
+}
+
+function addPdfHeader(doc, payload, title, subtitle) {
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(139, 17, 17);
+  doc.setFontSize(18);
+  doc.text('RAMDEV TRADERS', 12, 15);
+  doc.setFontSize(12);
+  doc.setTextColor(16, 24, 39);
+  doc.text(title, 12, 23);
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(8.5);
+  doc.text(subtitle, 12, 29);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.text(`Enquiry No: ${payload.enquiryNo}`, 118, 15);
+  doc.text(`Date: ${payload.generatedAt.toLocaleDateString('en-IN')}`, 118, 22);
+  doc.setDrawColor(139, 17, 17);
+  doc.setLineWidth(0.7);
+  doc.line(12, 34, 198, 34);
+}
+
+function drawPdfField(doc, label, value, x, y, width) {
+  doc.setFont('helvetica', 'bold');
+  doc.text(label, x, y);
+  doc.setFont('helvetica', 'normal');
+  const wrapped = doc.splitTextToSize(String(value || '-'), width - 23);
+  doc.text(wrapped, x + 23, y);
+  return Math.max(5.2, wrapped.length * 4.2);
+}
+
+function addPdfCustomerDetails(doc, payload, y) {
+  const details = payload.details;
+  const messageLines = doc.splitTextToSize(`Message: ${details.message || '-'}`, 172);
+  const boxHeight = 36 + Math.max(5, messageLines.length * 4.2);
+  doc.setFillColor(255, 247, 223);
+  doc.setDrawColor(234, 215, 165);
+  doc.roundedRect(12, y, 186, boxHeight, 2, 2, 'FD');
+  doc.setFontSize(8.5);
+  doc.setTextColor(16, 24, 39);
+  let leftY = y + 8;
+  let rightY = y + 8;
+  leftY += drawPdfField(doc, 'Customer:', details.name, 16, leftY, 86);
+  leftY += drawPdfField(doc, 'Mobile:', details.mobile, 16, leftY, 86);
+  leftY += drawPdfField(doc, 'City/Area:', details.city, 16, leftY, 86);
+  rightY += drawPdfField(doc, 'District:', details.district, 106, rightY, 86);
+  rightY += drawPdfField(doc, 'Postal:', details.postalArea, 106, rightY, 86);
+  rightY += drawPdfField(doc, 'PIN Code:', details.pincode, 106, rightY, 86);
+  doc.setFont('helvetica', 'normal');
+  doc.text(messageLines, 16, y + boxHeight - (messageLines.length * 4.2));
+  return y + boxHeight + 8;
+}
+
+function ensurePdfPageSpace(doc, y, needed, payload, title, subtitle, tableHeaderFn) {
+  if (y + needed <= 282) return y;
+  doc.addPage();
+  addPdfHeader(doc, payload, title, subtitle);
+  return tableHeaderFn(42);
+}
+
+function drawTableCell(doc, text, x, y, width, options = {}) {
+  const fontSize = options.fontSize || 7.2;
+  doc.setFontSize(fontSize);
+  const lines = doc.splitTextToSize(String(text || ''), width);
+  const drawX = options.align === 'right' ? x + width : options.align === 'center' ? x + width / 2 : x;
+  doc.text(lines, drawX, y, { align: options.align || 'left' });
+  return lines.length;
+}
+
+function downloadEstimatePDF(payload = prepareDocumentPayload()) {
+  if (!payload) return;
+  const jsPDF = window.jspdf?.jsPDF;
+  if (!jsPDF) { alert('PDF library is still loading. Please try again in a few seconds.'); return; }
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const title = 'Customer Estimate';
+  const subtitle = 'Selected items only with MRP, discount price, quantity, total and savings.';
+  addPdfHeader(doc, payload, title, subtitle);
+  let y = addPdfCustomerDetails(doc, payload, 40);
+
+  const columns = [
+    { label: 'S.No', x: 12, w: 10, align: 'center' },
+    { label: 'Product', x: 24, w: 54, align: 'left' },
+    { label: 'Unit', x: 80, w: 13, align: 'center' },
+    { label: 'MRP', x: 96, w: 21, align: 'right' },
+    { label: 'Disc. Price', x: 120, w: 24, align: 'right' },
+    { label: 'Qty', x: 147, w: 10, align: 'center' },
+    { label: 'Item Total', x: 160, w: 20, align: 'right' },
+    { label: 'You Save', x: 182, w: 16, align: 'right' }
+  ];
+
+  const drawHeader = (headerY) => {
+    doc.setFillColor(95, 7, 7);
+    doc.rect(10, headerY, 190, 9, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(7.2);
+    doc.setTextColor(247, 201, 72);
+    columns.forEach(col => doc.text(col.label, col.align === 'right' ? col.x + col.w : col.align === 'center' ? col.x + col.w / 2 : col.x, headerY + 5.8, { align: col.align }));
+    return headerY + 11;
+  };
+  y = drawHeader(y);
+
+  payload.items.forEach((item, index) => {
+    const productLines = doc.splitTextToSize(item.name, columns[1].w);
+    const rowHeight = Math.max(10, productLines.length * 4.1 + 5);
+    y = ensurePdfPageSpace(doc, y, rowHeight, payload, title, subtitle, drawHeader);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.2);
+    doc.setTextColor(16, 24, 39);
+    doc.setDrawColor(234, 215, 165);
+    doc.line(10, y + rowHeight, 200, y + rowHeight);
+    drawTableCell(doc, String(index + 1), columns[0].x, y + 5, columns[0].w, { align: 'center' });
+    drawTableCell(doc, item.name, columns[1].x, y + 5, columns[1].w);
+    drawTableCell(doc, item.unit, columns[2].x, y + 5, columns[2].w, { align: 'center' });
+    drawTableCell(doc, formatInrForDocs(item.mrp), columns[3].x, y + 5, columns[3].w, { align: 'right', fontSize: 6.7 });
+    drawTableCell(doc, formatInrForDocs(item.price), columns[4].x, y + 5, columns[4].w, { align: 'right', fontSize: 6.7 });
+    drawTableCell(doc, String(item.qty), columns[5].x, y + 5, columns[5].w, { align: 'center' });
+    drawTableCell(doc, formatInrForDocs(item.total), columns[6].x, y + 5, columns[6].w, { align: 'right', fontSize: 6.7 });
+    drawTableCell(doc, getItemSavingLabel(item), columns[7].x, y + 5, columns[7].w, { align: 'right', fontSize: 6.4 });
+    y += rowHeight;
+  });
+
+  y = ensurePdfPageSpace(doc, y, 38, payload, title, subtitle, drawHeader);
+  doc.setFillColor(255, 247, 223);
+  doc.setDrawColor(234, 215, 165);
+  doc.roundedRect(104, y + 4, 94, 28, 2, 2, 'FD');
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(16, 24, 39);
+  doc.text('Total MRP Value:', 108, y + 12);
+  doc.text('Grand Total After Discount:', 108, y + 20);
+  doc.text('Total Savings After Discount:', 108, y + 28);
+  doc.setTextColor(139, 17, 17);
+  doc.text(formatInrForDocs(payload.totalMrpValue), 194, y + 12, { align: 'right' });
+  doc.text(formatInrForDocs(payload.totalAmount), 194, y + 20, { align: 'right' });
+  doc.setTextColor(15, 81, 50);
+  doc.text(formatInrForDocs(payload.totalSavings), 194, y + 28, { align: 'right' });
+
+  doc.setFont('helvetica', 'normal');
+  doc.setFontSize(7.5);
+  doc.setTextColor(80, 80, 80);
+  const note = 'Important: This is an estimate only and not an online purchase confirmation. Final availability, permitted products, payment method and pickup/delivery details will be confirmed only through official RAMDEV TRADERS contact. Minimum enquiry value: INR 3,000.';
+  doc.text(doc.splitTextToSize(note, 186), 12, y + 42);
+  doc.save(`${payload.enquiryNo}_customer_estimate.pdf`);
+}
+
+function downloadPackingPDF(payload = prepareDocumentPayload()) {
+  if (!payload) return;
+  const jsPDF = window.jspdf?.jsPDF;
+  if (!jsPDF) { alert('PDF library is still loading. Please try again in a few seconds.'); return; }
+  const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const title = 'Shop Packing List';
+  const subtitle = 'For shop staff only. Prices are hidden intentionally.';
+  addPdfHeader(doc, payload, title, subtitle);
+  let y = addPdfCustomerDetails(doc, payload, 40);
+
+  const drawHeader = (headerY) => {
+    doc.setFillColor(16, 24, 39);
+    doc.rect(12, headerY, 186, 9, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.setTextColor(247, 201, 72);
+    doc.text('S.No', 16, headerY + 5.8);
+    doc.text('Product Name', 33, headerY + 5.8);
+    doc.text('Category', 124, headerY + 5.8);
+    doc.text('Unit', 164, headerY + 5.8);
+    doc.text('Qty', 184, headerY + 5.8);
+    return headerY + 11;
+  };
+  y = drawHeader(y);
+
+  payload.items.forEach((item, index) => {
+    const productLines = doc.splitTextToSize(item.name, 86);
+    const categoryLines = doc.splitTextToSize(item.category, 36);
+    const rowHeight = Math.max(10, productLines.length * 4.1 + 5, categoryLines.length * 4.1 + 5);
+    y = ensurePdfPageSpace(doc, y, rowHeight, payload, title, subtitle, drawHeader);
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(7.5);
+    doc.setTextColor(16, 24, 39);
+    doc.setDrawColor(234, 215, 165);
+    doc.line(12, y + rowHeight, 198, y + rowHeight);
+    doc.text(String(index + 1), 16, y + 5);
+    doc.text(productLines, 33, y + 5);
+    doc.text(categoryLines, 124, y + 5);
+    doc.text(item.unit, 164, y + 5);
+    doc.setFont('helvetica', 'bold');
+    doc.text(String(item.qty), 184, y + 5);
+    y += rowHeight;
+  });
+
+  y = ensurePdfPageSpace(doc, y, 18, payload, title, subtitle, drawHeader);
+  doc.setFont('helvetica', 'bold');
+  doc.setFontSize(9);
+  doc.setTextColor(139, 17, 17);
+  doc.text(doc.splitTextToSize('Packing instruction: Check quantity carefully before dispatch. No pricing is shown on this staff packing list.', 182), 12, y + 9);
+  doc.save(`${payload.enquiryNo}_packing_list.pdf`);
+}
+
+function downloadEstimatePdfAction() {
+  const payload = prepareDocumentPayload();
+  if (payload) downloadEstimatePDF(payload);
+}
+
+function downloadEstimateExcelAction() {
+  const payload = prepareDocumentPayload();
+  if (payload) downloadEstimateExcel(payload);
+}
+
+function downloadPackingPdfAction() {
+  const payload = prepareDocumentPayload();
+  if (payload) downloadPackingPDF(payload);
+}
+
+function downloadPackingExcelAction() {
+  const payload = prepareDocumentPayload();
+  if (payload) downloadPackingExcel(payload);
+}
+
+function downloadAllOrderDocuments(payload) {
+  downloadEstimatePDF(payload);
+  downloadEstimateExcel(payload);
+  downloadPackingPDF(payload);
+  downloadPackingExcel(payload);
+}
+
 function printSelectedEstimate() {
   const items = getCartItems();
   if (items.length === 0) { alert('Please select at least one product before printing.'); return; }
@@ -1826,14 +2177,11 @@ function printSelectedEstimate() {
 }
 
 function sendWhatsAppEnquiry() {
-  const items = getCartItems();
-  if (items.length === 0) { alert('Please select at least one product before sending enquiry.'); return; }
-  if (!validateMinimumValue()) return;
-  const details = validateCustomerDetails();
-  if (!details) return;
+  const payload = prepareDocumentPayload();
+  if (!payload) return;
+  const { items, details, enquiryNo, totalAmount } = payload;
 
-  const enquiryNo = generateEnquiryNumber();
-  const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+  downloadAllOrderDocuments(payload);
   const productLines = items.map(item => `- ${item.id}. ${item.name} (${item.unit}) | Qty: ${item.qty} | Rate: ${formatCurrency(item.price)} | Total: ${formatCurrency(item.total)}`).join('%0A');
   const message = `RAMDEV TRADERS Price List Enquiry%0AEnquiry No: ${encodeURIComponent(enquiryNo)}%0A%0AName: ${encodeURIComponent(details.name)}%0AMobile: ${encodeURIComponent(details.mobile)}%0ACity/Area: ${encodeURIComponent(details.city)}%0ADistrict: ${encodeURIComponent(details.district)}%0APostal Area: ${encodeURIComponent(details.postalArea)}%0APIN Code: ${encodeURIComponent(details.pincode)}%0A%0ASelected Products:%0A${productLines}%0A%0AEstimate Total: ${encodeURIComponent(formatCurrency(totalAmount))}%0A%0AMessage: ${encodeURIComponent(details.message || 'No special request')}%0A%0ANote: Please confirm availability, permitted products and next steps through official contact only.`;
   window.open(`https://wa.me/${officialWhatsappNumber}?text=${message}`, '_blank');

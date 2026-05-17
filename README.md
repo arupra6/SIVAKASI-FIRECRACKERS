@@ -1,29 +1,10 @@
-# RAMDEV TRADERS Website
+# RAMDEV TRADERS frontend website
 
-Static HTML/CSS/JavaScript website for RAMDEV TRADERS firecrackers catalogue, price list, estimate cart and enquiry workflow.
+Static GitHub Pages website for RAMDEV TRADERS.
 
-## Latest update
+Latest update:
+- Customer Estimate PDF and Excel now include MRP, Discount Price, Quantity, Item Total, You Save, Grand Total, and Total Savings.
+- Packing List PDF and Excel keep prices hidden and show only customer details, product name/category/unit/quantity.
+- PDF and Excel alignment/spacing improved with wrapped product names and cleaner totals.
 
-- Price List changed from table/list to modern product tile layout.
-- Each product tile includes a future photo placeholder.
-- 75% discount banner added at the top of the Price List page.
-- Gift Box and Combo Pack items are marked as Net Rate / No Discount.
-- Customer details form moved below the product tile scroll area.
-- Estimate cart summary remains separate.
-- Selected quantities are saved in browser localStorage.
-- Reset button clears all selected quantities.
-- WhatsApp enquiry includes generated enquiry number.
-- Added customer-attraction sections: best sellers, family packs, verification checklist, buyer trust badges and Tamil trust message.
-
-## Important placeholders to update later
-
-- Official phone number
-- Official WhatsApp number
-- Email address
-- Full verified shop address
-- Google Maps link
-- Real shop photos
-- Product photos
-
-
-Comments 25-27 update: Increased product tile scroll height, added District and PIN Code fields to the final customer details form, and included these location details in WhatsApp enquiry messages.
+Upload all files and the full assets folder to the GitHub repository root.
